@@ -30,7 +30,6 @@ def upload():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            print(file.filename)
             filename = secure_filename(file.filename)
 
             if not os.path.exists(app.config['UPLOAD_FOLDER']):

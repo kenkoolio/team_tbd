@@ -22,7 +22,7 @@ def float_range(start, stop, step):
 
 # this function does all the stuff listed at the top of this file.
 # based on https://stackoverflow.com/questions/43148590/extract-images-using-opencv-and-python-or-moviepy
-def spliceAndProcess(movie, timeIncrementSeconds, outputDir):
+def spliceAndProcess(movie, movie_path, timeIncrementSeconds=60.0, outputDir='slides'):
     # ensure that slide directory exists and is empty
     # this is technically dangerous:
     #   In the finished product we may want to delete dir when we're done, and
@@ -36,7 +36,7 @@ def spliceAndProcess(movie, timeIncrementSeconds, outputDir):
             os.remove(os.path.join(outputDir, f))
 
     # get video handler and calculate segment times
-    clip = VideoFileClip(movie)
+    clip = VideoFileClip(os.path.join(movie_path, movie))
     print("the duration is: ", clip.duration)
     times = list(float_range(0, clip.duration, timeIncrementSeconds))
     print("the clips are at: ", times)
@@ -59,7 +59,7 @@ def spliceAndProcess(movie, timeIncrementSeconds, outputDir):
 
 
 # example function execution
-moviePath = 'testVid.mp4'  # path of the video to process
-outputPath = 'slides'  # temp dir to store the files
-timeIncrement = 60.0  # time per slide in seconds
-spliceAndProcess(moviePath, timeIncrement, outputPath)
+#moviePath = 'testVid.mp4'  # path of the video to process
+#outputPath = 'slides'  # temp dir to store the files
+#timeIncrement = 60.0  # time per slide in seconds
+#spliceAndProcess(moviePath, timeIncrement, outputPath)

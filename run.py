@@ -32,9 +32,12 @@ def upload():
         if file and allowed_file(file.filename):
             print(file.filename)
             filename = secure_filename(file.filename)
+
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('processFile',
-                                    filename=filename))
+            return redirect(url_for(process_file(filename)))
     else:
         return render_template("upload.html")
 

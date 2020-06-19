@@ -1,7 +1,7 @@
 import os
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
-UPLOAD_FOLDER='./static/audio'
+UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 
 app = Flask(__name__)
@@ -30,17 +30,23 @@ def upload():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            print(file.filename)
             filename = secure_filename(file.filename)
+
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('processFile',
-                                    filename=filename))
+            session['filename'] = filename
+            return redirect(url_for('process_file'))
     else:
         return render_template("upload.html")
 
 @app.route('/processFile')
-def process_file(filename):
-    return "file added :)"
+def process_file():
+    filename = session['filename']
+    # render processing template until transcription is ready
+    # when transcription func returns, render appropriate template
+    return render_template('processing.html'), 404
 
 @app.errorhandler(404)
 def not_found(error):

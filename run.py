@@ -40,7 +40,7 @@ def upload():
 
 @app.route('/processFile')
 def process_file(filename):
-    return "file added"
+    return "file added :)"
 
 
 

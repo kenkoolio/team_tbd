@@ -64,6 +64,10 @@ def get_scribe():
     print(json.dumps(speech_recognition_results, indent=2))
     return speech_recognition_results
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('404.html'), 404

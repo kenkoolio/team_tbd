@@ -10,14 +10,14 @@ UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = b'6\x9eL~l\xbb2\xed\xe0&\x08\xbf\xa4@\xc2\x9e'
+app.secret_key = os.environ.get('SESSION_KEY')
 
 
-authenticator = IAMAuthenticator(API_KEY)
+authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
 speech_to_text = SpeechToTextV1(
     authenticator=authenticator
 )
-speech_to_text.set_service_url(API_URL)
+speech_to_text.set_service_url(os.environ.get('API_URL'))
 speech_to_text.set_disable_ssl_verification(True)
 
 @app.route('/')

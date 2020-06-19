@@ -1,17 +1,15 @@
 import os
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import Flask, render_template, flash, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from credentials import API_KEY, API_URL
 import json
-
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = os.environ.get('SESSION_KEY')
-
 
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
 speech_to_text = SpeechToTextV1(
@@ -19,6 +17,9 @@ speech_to_text = SpeechToTextV1(
 )
 speech_to_text.set_service_url(os.environ.get('API_URL'))
 speech_to_text.set_disable_ssl_verification(True)
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def index():
@@ -39,17 +40,23 @@ def upload():
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            print(file.filename)
             filename = secure_filename(file.filename)
+
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
+
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('processFile',
-                                    filename=filename))
+            session['filename'] = filename
+            return redirect(url_for('process_file'))
     else:
         return render_template("upload.html")
 
 @app.route('/processFile')
-def process_file(filename):
-    return "file added :)"
+def process_file():
+    filename = session['filename']
+    # render processing template until transcription is ready
+    # when transcription func returns, render appropriate template
+    return render_template('processing.html'), 404
 
 @app.route('/getTranscription')
 def get_scribe():

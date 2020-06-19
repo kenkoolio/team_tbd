@@ -1,4 +1,6 @@
 venv
 __pycache__/
 credentials.py
-.DS_STORE
+static/audio
+static/media
+.DS_Store

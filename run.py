@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
-UPLOAD_FOLDER='./static/audio'
+UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 
 app = Flask(__name__)

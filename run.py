@@ -37,7 +37,7 @@ def upload():
                 os.mkdir(app.config['UPLOAD_FOLDER'])
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for(process_file(filename)))
+            return redirect(url_for('processFile', filename=filename))
     else:
         return render_template("upload.html")
 

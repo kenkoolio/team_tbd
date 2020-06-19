@@ -3,3 +3,4 @@ __pycache__/
 credentials.py
 static/audio
 static/media
+.DS_Store

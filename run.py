@@ -45,6 +45,8 @@ def upload():
 @app.route('/processFile')
 def process_file():
     filename = session['filename']
+    # render processing template until transcription is ready
+    # when transcription func returns, render appropriate template
     return render_template('processing.html'), 404
 
 @app.errorhandler(404)

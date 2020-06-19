@@ -6,7 +6,7 @@ ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = b'6\x9eL~l\xbb2\xed\xe0&\x08\xbf\xa4@\xc2\x9e'
+app.secret_key = os.environ.get('SESSION_KEY')
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

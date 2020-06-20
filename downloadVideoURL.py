@@ -12,7 +12,6 @@ def clean_title(title):
     title = list(title) #use list to split string on characters
     output = []
     for character in title:
-        print(character)
         if character == ' ':
             output.append('-')
         elif character not in ILLEGAL:

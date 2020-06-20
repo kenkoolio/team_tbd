@@ -5,14 +5,14 @@
 {% block content %}
 <div class="container-lg">
   <form>
-    {% for key, value in image_text.items() %}
+    {% for segment in image_text %}
     <div class="form-group">
       <figure class="figure">
-      <img src={{key}} class="figure-img img-fluid rounded" alt="Screenshot of Video">
+      <img src="../{{segment.image}}" class="figure-img img-fluid rounded" alt="Screenshot of Video">
       </figure>
-
-      <label for={{key}}>Update Transcription</label>
-      <textarea id={{key}} name={{key}} rows="5"> {{value}}</textarea>
+      <br />
+      <label for=segment[image]>Update Transcription</label><br />
+      <textarea id={{segment.image}} name={{segment.image}} rows="5"> {{segment.text}}</textarea>
       <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
     </div>
     {% endfor %}

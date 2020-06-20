@@ -75,7 +75,8 @@ def result():
 @app.route('/send', methods=['POST'])
 def send():
     receiver = request.form['email-input']
-    pdf = request.form['pdf']
+    pdf_path = request.form['pdf'][1:]
+    pdf_filename = pdf_path.split('static/pdf/')[-1]
 
     message = Mail(
         from_email='class-scribe@mail.com',
@@ -83,8 +84,18 @@ def send():
         subject='Class Scribe: Your notes',
         html_content="<p>Class Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")
 
+    with open(pdf_path, 'rb') as f:
+        data = f.read()
+        f.close()
+    encoded_file = base64.b64encode(data).decode()
 
-
+    attached_file = Attachment(
+        FileContent(encoded_file),
+        FileName(pdf_filename),
+        FileType('application/pdf'),
+        Disposition('attachment')
+    )
+    message.attachment = attached_file
 
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
@@ -92,7 +103,8 @@ def send():
     except Exception as e:
         print(e)
 
-    return render_template('upload.html')
+    return redirect(url_for('upload'))
+
 
 @app.route('/about')
 def about():

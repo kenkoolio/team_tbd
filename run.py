@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 # from ibm_watson import SpeechToTextV1
 # from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from spliceAndProcess import spliceAndProcess
+from segment_functions import create_imagetext_dictionary
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
@@ -60,10 +61,21 @@ def process_file():
     filename = session['filename']
     time_interval = session['time_interval']
     folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
-    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
-    session['pdf_path'] = pdf_path
-    return redirect(url_for('result'))
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
+    session['segments'] = segments
+    print(segments)
+    image_text = create_imagetext_dictionary(segments)
+#    session['pdf_path'] = pdf_path
+#    return redirect(url_for('result'))
+    print(image_text)
+    return render_template("editTranscription.html", image_text=[image_text])
+'''
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
 
+    else:
+'''
 # this route is just for testing purposes while I play with placeholder pdf
 # we can remove it when pdf generation of our dynamic material is complete if
 # we want to do this differently..

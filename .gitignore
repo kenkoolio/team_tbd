@@ -3,3 +3,4 @@ __pycache__/
 static/audio
 static/media
 .DS_Store
+slides

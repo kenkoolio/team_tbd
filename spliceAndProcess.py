@@ -158,7 +158,9 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # get video handler and calculate segment times
     fullVideoPath = os.path.join(video_folder, video_name)
     print("full video path", fullVideoPath)
+
     clip = VideoFileClip(fullVideoPath)
+
     print("the duration is: ", clip.duration)
     times = list(float_range(0, clip.duration, time_increment_seconds))
     print("the clips are at: ", times)
@@ -176,7 +178,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateAudioClips(clip, segments, output_dir)
 
     # create transcriptions of audio
-    generateTranscriptions(segments)
+    generateTranscriptionsFake(segments)
 
     # create document
     pathToDocument = generateDocument(video_name, segments, output_dir)

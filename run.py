@@ -1,9 +1,11 @@
 import os
+import requests
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 # from ibm_watson import SpeechToTextV1
 # from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from spliceAndProcess import spliceAndProcess
+from downloadVideoURL import download_video
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
@@ -54,6 +56,22 @@ def upload():
     else:
         script = ["uploadscript.js"]
         return render_template("upload.html", jsscripts=script)
+
+
+@app.route('/upload-from-url', methods=['POST'])
+def upload_from_url():
+    video_url = request.form["video_url"]
+    if ('youtube.com' in video_url) or ('oregonstate.edu' in video_url):
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.mkdir(app.config['UPLOAD_FOLDER'])
+
+        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'])
+        session['time_interval'] = int(request.form["time_interval"])
+        return redirect(url_for('process_file'))
+    else:
+        flash('Incorrect Video URL')
+        return redirect(request.url)
+
 
 @app.route('/processFile')
 def process_file():

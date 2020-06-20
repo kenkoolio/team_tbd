@@ -4,6 +4,7 @@ import os
 import shutil
 from PyPDF2 import PdfFileMerger
 from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.units import inch
 
 
 def create_pdf(filename, segments, output_dir):
@@ -17,9 +18,12 @@ def create_pdf(filename, segments, output_dir):
         output_pdf_name <str>: location of generated .pdf file
     '''
     try:
-        # size of a letter in landscape
-        WIDTH = 792.0
-        HEIGHT = 612.0
+        # size of a letter in portrait
+        WIDTH = 612.0
+        HEIGHT = 792.0
+
+        TEXT_X = 1
+        TEXT_Y = (HEIGHT / inch / 2)
 
         # create temp directory for slides
         TEMP_SLIDE_FOLDER='./tempslides'
@@ -34,9 +38,17 @@ def create_pdf(filename, segments, output_dir):
             # create a pdf slide 
             canvas = Canvas(filename=temp_pdf_slide_path, pagesize=(WIDTH, HEIGHT))
             # insert the image into the canvas
-            canvas.drawImage(segment.imagePath, 0, 0, width=(WIDTH/2), height=HEIGHT, preserveAspectRatio=True, anchor='n')
+            canvas.drawImage(
+                segment.imagePath,                      # image source
+                (WIDTH*.1),                             # x-coord, with 10% left margin (origin starts from bottom left)
+                ((HEIGHT/2)-(HEIGHT*.1)),               # y-coord, halfway up, with 10% top margin
+                width=(WIDTH-(WIDTH*.2)),               # width of image is page width minus 20% (for 10% margins on each side)
+                height=(HEIGHT/2),                      # height of image is half of page height
+                preserveAspectRatio=True,               # keep aspect ratio
+                anchor='n'                              # anchor the image to the top (north) of containing box
+                )
             # insert text into the canvas
-            canvas.drawString(72, 72, segment.text)
+            canvas.drawString(72, TEXT_Y, segment.text)
             canvas.save()
 
         # combine temp slides into output

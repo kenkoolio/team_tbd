@@ -4,14 +4,28 @@
 # segments from that video file, with the intention that later we would send those
 # audio segments to get transcribed prior to creating the document.
 # still do to: probably overlap the audio to get better transcription.
+#
+# example execution of the main function is at the bottom
 
 import os  # for file handling
 # this package will have to be installed to the environment to be included.
 # to get this package into conda, run from terminal: conda install -c conda-forge moviepy
-from moviepy.editor import *
+# pip install moviepy also works if you use pip; added to requirements.txt
+from moviepy.video.io.VideoFileClip import VideoFileClip
 
 from typing import List
 from pdfCreator import create_pdf
+
+from ibm_watson import SpeechToTextV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+# setup for ibm watson transcription service
+authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
+speech_to_text = SpeechToTextV1(
+    authenticator=authenticator
+)
+speech_to_text.set_service_url(os.environ.get('API_URL'))
+speech_to_text.set_disable_ssl_verification(True)
 
 # this is just a decimal version of the standard range function
 # adapted from https://www.techbeamers.com/python-float-range/#:~:text=Python%20range%20can%20only%20generate,arguments%20are%20of%20integer%20type.
@@ -59,20 +73,33 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
 
 
 def generateTranscriptions(segments: List[Segment]):
-    # code goes here
-    # pass
+    # for seg in segments:
+    #     filename = seg.audioPath
+    #     with open(filename, 'rb') as audio_file:
+    #         speech_recognition_results = speech_to_text.recognize(
+    #             audio=audio_file,
+    #             content_type='audio/mp3',
+    #             word_alternatives_threshold=0.9,
+	# 			smart_formatting='true'
+    #         ).get_result()
 
-    # test delete me
+    #     transcript = []
+    #     for portion in speech_recognition_results['results']:
+    #         # timestamp = portion['word_alternatives'][0]['start_time']
+    #         text = portion['alternatives'][0]['transcript']
+    #         # text_data = dict({'timestamp': timestamp, 'text': text})
+    #         # transcript.append(text_data)
+    #         transcript.append(text)
+    #     seg.text = '. '.join(transcript)
+    #     print("Finished transcription of segment with text:\n", seg.text)
+
+    # for testing to avoid using api limit
     for seg in segments:
         seg.text = 'testing'
 
 
 def generateDocument(filename, segments: List[Segment], output_dir):
-    # code goes here
-    # return "path do document would go here"
-    # return the path to the generated document, presumably stored in the output_dir
-
-    # testing 
+    # return the path to the generated document, stored in the output_dir
     filename = filename.rsplit('.')[0]
     return create_pdf(filename, segments, output_dir)
 
@@ -81,6 +108,8 @@ def generateDocument(filename, segments: List[Segment], output_dir):
 # this function does all the stuff listed at the top of this file.
 # based on https://stackoverflow.com/questions/43148590/extract-images-using-opencv-and-python-or-moviepy
 def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides'):
+    print("video name received", video_name)
+    print("video folder received", video_folder)
     # ensure that slide directory exists and is empty
     # this is technically dangerous:
     #   In the finished product we may want to delete dir when we're done, and
@@ -88,7 +117,9 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     createOrCleanOutputFolder(output_dir)
 
     # get video handler and calculate segment times
-    clip = VideoFileClip(os.path.join(video_folder, video_name))
+    fullVideoPath = os.path.join(video_folder, video_name)
+    print("full video path", fullVideoPath)
+    clip = VideoFileClip(fullVideoPath)
     print("the duration is: ", clip.duration)
     times = list(float_range(0, clip.duration, time_increment_seconds))
     print("the clips are at: ", times)
@@ -111,8 +142,13 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # create document
     pathToDocument = generateDocument(video_name, segments, output_dir)
 
+	# clean up the temp folder of data files no longer needed.
+	# code goes here
+
     # finally, give the document path back to calling function to be delivered to user
-    return pathToDocument
+    #return pathToDocument
+    # line 144 is placeholder only. line 142 should be used when pdf gen is done.
+    return '/static/pdf/placehold.pdf'
 
 
 # example function execution

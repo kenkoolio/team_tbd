@@ -25,3 +25,4 @@ urllib3==1.25.9
 websocket-client==0.48.0
 Werkzeug==1.0.1
 moviepy==1.0.3
+FPDF==1.7.2

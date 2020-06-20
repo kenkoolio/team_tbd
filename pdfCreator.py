@@ -34,7 +34,7 @@ def create_pdf(filename, segments, output_dir):
             # create a pdf slide 
             canvas = Canvas(filename=temp_pdf_slide_path, pagesize=(WIDTH, HEIGHT))
             # insert the image into the canvas
-            canvas.drawImage(segment.imagePath, 0, 0, preserveAspectRatio=True)
+            canvas.drawImage(segment.imagePath, 0, 0, width=(WIDTH/2), height=HEIGHT, preserveAspectRatio=True, anchor='n')
             # insert text into the canvas
             canvas.drawString(72, 72, segment.text)
             canvas.save()

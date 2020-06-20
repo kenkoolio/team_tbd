@@ -11,6 +11,7 @@ import os  # for file handling
 from moviepy.editor import *
 
 from typing import List
+from pdfCreator import create_pdf
 
 # this is just a decimal version of the standard range function
 # adapted from https://www.techbeamers.com/python-float-range/#:~:text=Python%20range%20can%20only%20generate,arguments%20are%20of%20integer%20type.
@@ -59,13 +60,22 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
 
 def generateTranscriptions(segments: List[Segment]):
     # code goes here
-    pass
+    # pass
+
+    # test delete me
+    for seg in segments:
+        seg.text = 'testing'
 
 
-def generateDocument(segments: List[Segment], output_dir):
+def generateDocument(filename, segments: List[Segment], output_dir):
     # code goes here
-    return "path do document would go here"
+    # return "path do document would go here"
     # return the path to the generated document, presumably stored in the output_dir
+
+    # testing 
+    filename = filename.rsplit('.')[0]
+    return create_pdf(filename, segments, output_dir)
+
 
 
 # this function does all the stuff listed at the top of this file.
@@ -99,7 +109,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateTranscriptions(segments)
 
     # create document
-    pathToDocument = generateDocument(segments, output_dir)
+    pathToDocument = generateDocument(video_name, segments, output_dir)
 
     # finally, give the document path back to calling function to be delivered to user
     return pathToDocument

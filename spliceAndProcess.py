@@ -73,29 +73,29 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
 
 
 def generateTranscriptions(segments: List[Segment]):
-    # for seg in segments:
-    #     filename = seg.audioPath
-    #     with open(filename, 'rb') as audio_file:
-    #         speech_recognition_results = speech_to_text.recognize(
-    #             audio=audio_file,
-    #             content_type='audio/mp3',
-    #             word_alternatives_threshold=0.9,
-	# 			smart_formatting='true'
-    #         ).get_result()
+    for seg in segments:
+        filename = seg.audioPath
+        with open(filename, 'rb') as audio_file:
+            speech_recognition_results = speech_to_text.recognize(
+                audio=audio_file,
+                content_type='audio/mp3',
+                word_alternatives_threshold=0.9,
+				smart_formatting='true'
+            ).get_result()
 
-    #     transcript = []
-    #     for portion in speech_recognition_results['results']:
-    #         # timestamp = portion['word_alternatives'][0]['start_time']
-    #         text = portion['alternatives'][0]['transcript']
-    #         # text_data = dict({'timestamp': timestamp, 'text': text})
-    #         # transcript.append(text_data)
-    #         transcript.append(text)
-    #     seg.text = '. '.join(transcript)
-    #     print("Finished transcription of segment with text:\n", seg.text)
+        transcript = []
+        for portion in speech_recognition_results['results']:
+            # timestamp = portion['word_alternatives'][0]['start_time']
+            text = portion['alternatives'][0]['transcript']
+            # text_data = dict({'timestamp': timestamp, 'text': text})
+            # transcript.append(text_data)
+            transcript.append(text)
+        seg.text = '. '.join(transcript)
+        print("Finished transcription of segment with text:\n", seg.text)
 
     # for testing to avoid using api limit
-    for seg in segments:
-        seg.text = 'testing'
+    # for seg in segments:
+    #     seg.text = 'testing'
 
 
 def generateDocument(filename, segments: List[Segment], output_dir):

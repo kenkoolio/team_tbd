@@ -2,9 +2,9 @@
 
 import os
 import shutil
+import textwrap
 from PyPDF2 import PdfFileMerger
 from reportlab.pdfgen.canvas import Canvas
-from reportlab.lib.units import inch
 
 
 def create_pdf(filename, segments, output_dir):
@@ -22,8 +22,8 @@ def create_pdf(filename, segments, output_dir):
         WIDTH = 612.0
         HEIGHT = 792.0
 
-        TEXT_X = 1
-        TEXT_Y = (HEIGHT / inch / 2)
+        TEXT_X = 72
+        TEXT_Y = (HEIGHT / 2)
 
         # create temp directory for slides
         TEMP_SLIDE_FOLDER='./tempslides'
@@ -47,8 +47,9 @@ def create_pdf(filename, segments, output_dir):
                 preserveAspectRatio=True,               # keep aspect ratio
                 anchor='n'                              # anchor the image to the top (north) of containing box
                 )
+
             # insert text into the canvas
-            canvas.drawString(72, TEXT_Y, segment.text)
+            write_text(canvas, segment.text, TEXT_X, TEXT_Y)
             canvas.save()
 
         # combine temp slides into output
@@ -69,3 +70,28 @@ def create_pdf(filename, segments, output_dir):
     except Exception as e:
         print(f"Exception in 'create_pdf': {e}")
         raise
+
+
+def write_text(canvas, text, x, y):
+    FONT = "Helvetica"
+    FONT_SIZE = 16
+    LEADING = None          #default leading of None is 1.2 x font size in reportlab
+
+    transcription_text = wrap_transcription(text)
+
+    canvas.setFont(FONT, FONT_SIZE, LEADING)
+    
+    # pull y coordinate up one line before the loop starts
+    y+=FONT_SIZE
+
+    for line in transcription_text:
+        canvas.drawString(x, (y-FONT_SIZE), text)
+
+
+def wrap_transcription(input_str):
+    WRAP_WIDTH = 45
+
+    if len(input_str) > WRAP_WIDTH:
+        return textwrap.wrap(input_str, width=WRAP_WIDTH)
+    else:
+        return [input_str]

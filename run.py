@@ -1,8 +1,9 @@
 import os
+import base64
 from flask import Flask, render_template, flash, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
 # from ibm_watson import SpeechToTextV1
 # from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from spliceAndProcess import spliceAndProcess
@@ -71,24 +72,28 @@ def result():
     pdf_path = session['pdf_path']
     return render_template('result.html', pdf=pdf_path)
 
-@app.route('/send', methods=['GET', 'POST'])
+@app.route('/send', methods=['POST'])
 def send():
+    receiver = request.form['email-input']
+    pdf = request.form['pdf']
+
     message = Mail(
         from_email='class-scribe@mail.com',
-        to_emails='emctackett@gmail.com',
-        subject='Sending with Twilio SendGrid is Fun',
-        html_content='<strong>and easy to do anywhere, even with Python</strong>')
+        to_emails=receiver,
+        subject='Class Scribe: Your notes',
+        html_content="<p>Class Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")
+
+
+
+
     try:
         sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
         response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
     except Exception as e:
         print(e)
 
-    return 'hello'
-    
+    return render_template('upload.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')

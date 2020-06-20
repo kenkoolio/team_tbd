@@ -19,7 +19,13 @@ $(document).ready(function () {
 
   $('#send-email').click(function(e) {
     e.preventDefault();
+    let pdfPath = $('#pdf').attr('src');
     let form = $(this).closest('form');
+    let input = $('<input>')
+                  .attr('type', 'hidden')
+                  .attr('name', 'pdf')
+                  .val(pdfPath)
+    form.append(input);
     form.submit();
   });
 });

@@ -181,7 +181,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateTranscriptionsFake(segments)
 
     # create document
-    pathToDocument = generateDocument(video_name, segments, output_dir)
+    #pathToDocument = generateDocument(video_name, segments, output_dir)
 
 	# clean up the temp folder of data files no longer needed.
 	# code goes here
@@ -189,8 +189,17 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # finally, give the document path back to calling function to be delivered to user
     #return pathToDocument
     # line 144 is placeholder only. line 142 should be used when pdf gen is done.
-    return pathToDocument
+    return segments
 
+def create_imagetext_dictionary(segments: List[Segment]):
+    image_text=[]
+    for segment in segments:
+        image_text.append({
+            'image' : segment.imagePath,
+            'text' : segment.text
+        })
+    print(image_text)
+    return image_text
 
 # example function execution
 # movieName = 'testVid.mp4'  # name of the video

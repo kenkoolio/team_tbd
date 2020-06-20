@@ -7,6 +7,15 @@ from reportlab.pdfgen.canvas import Canvas
 
 
 def create_pdf(filename, segments, output_dir):
+    '''
+    Creates pdf file from parsed video segments with text transcription
+    Args: 
+        filename <str>: name of the file
+        segments <List[Segment]>: array of parsed input video segments and text
+        output_dir <str>: directory to save generated .pdf
+    Returns:
+        output_pdf_name <str>: location of generated .pdf file
+    '''
     # size of a letter in landscape
     WIDTH = 792.0
     HEIGHT = 612.0

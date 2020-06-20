@@ -11,4 +11,15 @@ $(document).ready(function () {
     e.preventDefault();
     window.location = e.target.href;
   });
+
+  $('#email-pdf').click((e) => {
+    e.preventDefault();
+    $('#email-form-container').toggleClass('d-none');
+  });
+
+  $('#send-email').click(function(e) {
+    e.preventDefault();
+    let form = $(this).closest('form');
+    form.submit();
+  });
 });

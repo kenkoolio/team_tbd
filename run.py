@@ -64,6 +64,12 @@ def process_file():
     # old code: return redirect(url_for('get_scribe'))
     return render_template('processing.html'), 404
 
+# this route is just for testing purposes while I play with placeholder pdf
+# we will remove it when pdf generation of our dynamic material is complete.
+@app.route('/result')
+def result():
+    return render_template('result.html', test="test"), 404
+
 # @app.route('/getTranscription')
 # def get_scribe():
 #     #hardcoded for testing purposes, this will be a parameter of get_scribe and will follow the process file route

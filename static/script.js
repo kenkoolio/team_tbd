@@ -1,3 +1,3 @@
-$(document).ready(function () {
-  console.log('loaded');
-});
+// $(document).ready(function () {
+//   $('#upload-submit').click(() => document.body.innerHTML = `{% include '/templates/processing.html' %}`);
+// });

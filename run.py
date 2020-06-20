@@ -3,6 +3,7 @@ from flask import Flask, render_template, flash, request, session, redirect, url
 from werkzeug.utils import secure_filename
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from spliceAndProcess import spliceAndProcess
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
@@ -53,21 +54,27 @@ def upload():
 @app.route('/processFile')
 def process_file():
     filename = session['filename']
+    #this won't show up this way
+    #render_template('processing.html'), 404
+    spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
     # render processing template until transcription is ready
     # when transcription func returns, render appropriate template
-    return render_template('processing.html'), 404
+    return redirect(url_for('get_scribe'))
 
 @app.route('/getTranscription')
 def get_scribe():
     #hardcoded for testing purposes, this will be a parameter of get_scribe and will follow the process file route
     filename = 'clip_0.1.mp3'
-    with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb') as audio_file:
-        speech_recognition_results = speech_to_text.recognize(
-            audio=audio_file,
-            content_type='audio/mp3',
-            word_alternatives_threshold=0.9,
-        ).get_result()
-    print(json.dumps(speech_recognition_results, indent=2))
+    filedirectory='./slides'
+    for file in os.listdir(filedirectory):
+        if file.endswith(".mp3"):
+            with open(os.path.join(filedirectory, file), 'rb') as audio_file:
+                speech_recognition_results = speech_to_text.recognize(
+                    audio=audio_file,
+                    content_type='audio/mp3',
+                    word_alternatives_threshold=0.9,
+                ).get_result()
+            print(json.dumps(speech_recognition_results, indent=2))
     return speech_recognition_results
 
 @app.route('/about')

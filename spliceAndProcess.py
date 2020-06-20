@@ -151,7 +151,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # finally, give the document path back to calling function to be delivered to user
     #return pathToDocument
     # line 144 is placeholder only. line 142 should be used when pdf gen is done.
-    return '/static/pdf/placehold.pdf'
+    return segments
 
 
 # example function execution

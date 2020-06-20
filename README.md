@@ -12,9 +12,10 @@ export API_URL=[API URL]
 export SESSION_KEY=[SESSION KEY]
 
 # setting up sendgrid locally
-echo "export SENDGRID_API_KEY='YOUR_API_KEY'" > sendgrid.env
-echo "sendgrid.env" >> .gitignore
-source ./sendgrid.env
+#export SENDGRID_API_KEY='YOUR_API_KEY' >> sendgrid.env
+#echo "sendgrid.env" >> .gitignore
+#source ./sendgrid.env
+export SENDGRID_API_KEY=[SENDGRID_API_KEY]
 ```
 
 ##Running the Flask App

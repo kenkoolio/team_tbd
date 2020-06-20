@@ -3,8 +3,7 @@ from flask import Flask, render_template, flash, request, session, redirect, url
 from werkzeug.utils import secure_filename
 # from ibm_watson import SpeechToTextV1
 # from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from spliceAndProcess import spliceAndProcess
-from segment_functions import create_imagetext_dictionary
+from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
@@ -78,8 +77,20 @@ def update_transcription():
         #print(request.values)
         updated_text = request.form
 
+        segments = []
+        for index, key in enumerate(updated_text):
+            segments.append(Segment(0,0))
+            segments[index].imagePath = key
+            segments[index].text = updated_text[key]
+            print(segments[index])
+
+        filename = session['filename']
+        folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+        pdf_path = generateDocument(filename, segments, folderName)
+
+
         #placeholder
-        return render_template("index.html")
+        return render_template("result.html", pdf=pdf_path)
 
 
 # this route is just for testing purposes while I play with placeholder pdf

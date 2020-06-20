@@ -1,10 +1,10 @@
 import os
+from flask import Flask, render_template, flash, request, session, redirect, url_for, jsonify
+from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
 import base64
-from flask import Flask, render_template, flash, request, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
-from spliceAndProcess import spliceAndProcess
 import json
 
 
@@ -45,18 +45,49 @@ def upload():
 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             session['filename'] = filename
+            session['time_interval']=int(request.form['time_interval'])
             return redirect(url_for('process_file'))
     else:
-        return render_template("upload.html")
+        script = ["uploadscript.js"]
+        return render_template("upload.html", jsscripts=script)
 
 @app.route('/processFile')
 def process_file():
     filename = session['filename']
+    time_interval = session['time_interval']
     folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
-    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, folderName)
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
+#    session['segments'] = segments
+    print(segments)
+    image_text = create_imagetext_dictionary(segments)
+#    session['pdf_path'] = pdf_path
+#    return redirect(url_for('result'))
+    print(image_text)
+    return render_template("editTranscription.html", image_text=image_text)
 
-    session['pdf_path'] = pdf_path
-    return redirect(url_for('result'))
+
+@app.route('/updateTranscription', methods=['POST'])
+def update_transcription():
+    if request.method == 'POST':
+        #print (request.get_json(force=True))
+        #print(request.values)
+        updated_text = request.form
+
+        segments = []
+        for index, key in enumerate(updated_text):
+            segments.append(Segment(0,0))
+            segments[index].imagePath = key
+            segments[index].text = updated_text[key]
+            print(segments[index])
+
+        filename = session['filename']
+        folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+        pdf_path = generateDocument(filename, segments, folderName)
+
+
+        #placeholder
+        return render_template("result.html", pdf=pdf_path)
+
 
 @app.route('/result')
 def result():

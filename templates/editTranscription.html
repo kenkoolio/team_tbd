@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Upload Media{% endblock %}
+
+
+{% block content %}
+<div class="container-lg">
+  <form method="POST" action="/updateTranscription" id='update_form'>
+    {% for segment in image_text %}
+    <div class="form-group">
+      <figure class="figure">
+      <img src="../{{segment.image}}" class="figure-img img-fluid rounded" alt="Screenshot of Video">
+      </figure>
+      <br />
+      <label for=segment[image]>Update Transcription</label><br />
+      <textarea id={{segment.image}} name={{segment.image}} rows="5" cols="90"> {{segment.text}}</textarea>
+      </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

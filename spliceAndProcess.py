@@ -18,6 +18,7 @@ from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import string
 import random
+from fpdf import FPDF
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -102,10 +103,45 @@ def generateTranscriptions(segments: List[Segment]):
         print("Finished transcription of segment with text:\n", seg.text)
 
 
-def generateDocument(segments: List[Segment], output_dir):
-    # code goes here
-    return "path to document would go here"
-    # return the path to the generated document, presumably stored in the output_dir
+class PDF(FPDF):
+    def __init__(self, header_title):
+        FPDF.__init__(self)
+        self.headerText = header_title
+
+    def header(self):
+        # Arial bold 15
+        self.set_font('Arial', 'B', 12)
+        # Move to the right
+        self.cell(80)
+        # Title
+        self.cell(10, 10, self.headerText)
+        # Line break
+        self.ln(10)
+
+    # Page footer
+    def footer(self):
+        # Position at 1.5 cm from bottom
+        self.set_y(-15)
+        # Arial italic 8
+        self.set_font('Arial', 'I', 8)
+        # Page number
+        self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
+
+
+def generateDocument(video_name, segments: List[Segment], output_dir):
+    pdf = PDF(video_name)
+    pdf.alias_nb_pages()
+    for seg in segments:
+        pdf.add_page()
+        pdf.set_font('Times', '', 12)
+        pdf.image(seg.imagePath, 5, None, 200)
+        pdf.ln(5)
+        pdf.multi_cell(0, 5, seg.text)
+
+    document_name = video_name + '.pdf'
+    path_to_doc = os.path.join(output_dir, document_name)
+    pdf.output(path_to_doc, 'F')
+    return path_to_doc
 
 
 # this function does all the stuff listed at the top of this file.
@@ -140,10 +176,10 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateAudioClips(clip, segments, output_dir)
 
     # create transcriptions of audio
-    generateTranscriptionsFake(segments)
+    generateTranscriptions(segments)
 
     # create document
-    pathToDocument = generateDocument(segments, output_dir)
+    #pathToDocument = generateDocument(video_name, segments, output_dir)
 
 	# clean up the temp folder of data files no longer needed.
 	# code goes here
@@ -151,8 +187,17 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # finally, give the document path back to calling function to be delivered to user
     #return pathToDocument
     # line 144 is placeholder only. line 142 should be used when pdf gen is done.
-    return '/static/pdf/placehold.pdf'
+    return segments
 
+def create_imagetext_dictionary(segments: List[Segment]):
+    image_text=[]
+    for segment in segments:
+        image_text.append({
+            'image' : segment.imagePath,
+            'text' : segment.text
+        })
+    print(image_text)
+    return image_text
 
 # example function execution
 # movieName = 'testVid.mp4'  # name of the video

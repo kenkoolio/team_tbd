@@ -103,16 +103,11 @@ def generateTranscriptions(segments: List[Segment]):
         seg.text = '. '.join(transcript)
         print("Finished transcription of segment with text:\n", seg.text)
 
-    # for testing to avoid using api limit
-    # for seg in segments:
-    #     seg.text = 'testing'
-
 
 def generateDocument(filename, segments: List[Segment], output_dir):
     # return the path to the generated document, stored in the output_dir
     filename = filename.rsplit('.')[0]
     return create_pdf(filename, segments, output_dir)
-
 
 
 # this function does all the stuff listed at the top of this file.
@@ -147,7 +142,8 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateAudioClips(clip, segments, output_dir)
 
     # create transcriptions of audio
-    generateTranscriptionsFake(segments)
+    # generateTranscriptionsFake(segments)
+    generateTranscriptions(segments)
 
     # create document
     pathToDocument = generateDocument(video_name, segments, output_dir)

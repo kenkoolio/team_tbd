@@ -35,8 +35,10 @@ def create_pdf(filename, segments, output_dir):
         for i, segment in enumerate(segments):
             temp_pdf_slide_path = filename+'-slide-'+str(i)+'.pdf'
             temp_pdf_slide_path = os.path.join(TEMP_SLIDE_FOLDER, temp_pdf_slide_path)
+            
             # create a pdf slide 
             canvas = Canvas(filename=temp_pdf_slide_path, pagesize=(WIDTH, HEIGHT))
+
             # insert the image into the canvas
             canvas.drawImage(
                 segment.imagePath,                      # image source
@@ -85,7 +87,8 @@ def write_text(canvas, text, x, y):
     y+=FONT_SIZE
 
     for line in transcription_text:
-        canvas.drawString(x, (y-FONT_SIZE), text)
+        y-=FONT_SIZE
+        canvas.drawString(x, y, line)
 
 
 def wrap_transcription(input_str):

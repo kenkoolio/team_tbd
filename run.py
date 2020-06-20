@@ -1,22 +1,18 @@
 import os
 from flask import Flask, render_template, flash, request, session, redirect, url_for, jsonify
-from werkzeug.utils import secure_filename
-# from ibm_watson import SpeechToTextV1
-# from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
+import base64
+from werkzeug.utils import secure_filename
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
 import json
+
+
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = os.environ.get('SESSION_KEY')
-
-# authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
-# speech_to_text = SpeechToTextV1(
-#     authenticator=authenticator
-# )
-# speech_to_text.set_service_url(os.environ.get('API_URL'))
-# speech_to_text.set_disable_ssl_verification(True)
 
 
 def allowed_file(filename):
@@ -93,33 +89,45 @@ def update_transcription():
         return render_template("result.html", pdf=pdf_path)
 
 
-# this route is just for testing purposes while I play with placeholder pdf
-# we can remove it when pdf generation of our dynamic material is complete if
-# we want to do this differently..
 @app.route('/result')
 def result():
     pdf_path = session['pdf_path']
-    return render_template('result.html', pdf=pdf_path), 404
+    return render_template('result.html', pdf=pdf_path)
 
-# @app.route('/getTranscription')
-# def get_scribe():
-#     #hardcoded for testing purposes, this will be a parameter of get_scribe and will follow the process file route
-#     filename = 'clip_0.1.mp3'
-#     with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb') as audio_file:
-#         speech_recognition_results = speech_to_text.recognize(
-#             audio=audio_file,
-#             content_type='audio/mp3',
-#             word_alternatives_threshold=0.9,
-#         ).get_result()
-#
-#     transcript = []
-#     for portion in speech_recognition_results['results']:
-#         #timestamp = portion['word_alternatives'][0]['start_time']
-#         text = portion['alternatives'][0]['transcript']
-#         #text_data = dict({'timestamp': timestamp, 'text': text})
-#         #transcript.append(text_data)
-#         transcript.append(text)
-#     return ('<br><br>').join(transcript)
+@app.route('/send', methods=['POST'])
+def send():
+    receiver = request.form['email-input']
+    pdf_path = request.form['pdf'][1:]
+    pdf_filename = pdf_path.split('static/pdf/')[-1]
+
+    message = Mail(
+        from_email='class-scribe@mail.com',
+        to_emails=receiver,
+        subject='Class Scribe: Your notes',
+        html_content="<p>Class Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")
+
+    with open(pdf_path, 'rb') as f:
+        data = f.read()
+        f.close()
+    encoded_file = base64.b64encode(data).decode()
+
+    attached_file = Attachment(
+        FileContent(encoded_file),
+        FileName(pdf_filename),
+        FileType('application/pdf'),
+        Disposition('attachment')
+    )
+    message.attachment = attached_file
+
+    try:
+        sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+        response = sg.send(message)
+    except Exception as e:
+        print(e)
+
+    flash('Email sent! You may upload another video file now.')
+    return redirect(url_for('upload'))
+
 
 @app.route('/about')
 def about():

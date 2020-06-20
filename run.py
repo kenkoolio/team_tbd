@@ -56,7 +56,8 @@ def upload():
 @app.route('/processFile')
 def process_file():
     filename = session['filename']
-    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
+    folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, folderName)
 
     session['pdf_path'] = pdf_path
     return redirect(url_for('result'))

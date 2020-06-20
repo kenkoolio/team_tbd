@@ -4,16 +4,15 @@
 
 {% block content %}
 
-<!-- <div class="jumbotron">
-  <h1 class="display-4">Welcome</h1>
-  <p class="lead">This website allows you to upload a mp4 of your class lecture and get a transcription.</p>
+<div class="jumbotron text-center">
+  <h1 class="display-4">Here are your notes:</h1>
+  <p class="lead">Your notes are ready!  Download or print them for future use.</p>
   <hr class="my-4">
   <p>Follow the link below to receive your free transcription.</p>
   <a class="btn btn-primary btn-lg" href="/upload" role="button">Get your notes</a>
-</div> -->
-<h1>{{test}}</h1>
-<div>
-  <embed src="/static/pdf/placehold.pdf" width="800px" height="900px" />
+</div>
+<div class="d-flex justify-content-center p-5 mb-5">
+  <embed src="{{pdf}}" width="800px" height="900px" />
 </div>
 
 {% endblock %}

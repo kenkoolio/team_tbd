@@ -65,10 +65,11 @@ def process_file():
     return render_template('processing.html'), 404
 
 # this route is just for testing purposes while I play with placeholder pdf
-# we will remove it when pdf generation of our dynamic material is complete.
+# we can remove it when pdf generation of our dynamic material is complete.
 @app.route('/result')
 def result():
-    return render_template('result.html', test="test"), 404
+    pdf_path = '/static/pdf/placehold.pdf'
+    return render_template('result.html', pdf=pdf_path), 404
 
 # @app.route('/getTranscription')
 # def get_scribe():

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', loadscreen);
+//document.addEventListener('DOMContentLoaded', loadscreen);
 
 
 //alert("connected");

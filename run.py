@@ -56,19 +56,17 @@ def upload():
 @app.route('/processFile')
 def process_file():
     filename = session['filename']
-    #this won't show up this way
-    #render_template('processing.html'), 404
-    spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
-    # render processing template until transcription is ready
-    # when transcription func returns, render appropriate template
-    # old code: return redirect(url_for('get_scribe'))
-    return render_template('processing.html'), 404
+    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
+
+    session['pdf_path'] = pdf_path
+    return redirect(url_for('result'))
 
 # this route is just for testing purposes while I play with placeholder pdf
-# we can remove it when pdf generation of our dynamic material is complete.
+# we can remove it when pdf generation of our dynamic material is complete if
+# we want to do this differently..
 @app.route('/result')
 def result():
-    pdf_path = '/static/pdf/placehold.pdf'
+    pdf_path = session['pdf_path']
     return render_template('result.html', pdf=pdf_path), 404
 
 # @app.route('/getTranscription')

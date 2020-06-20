@@ -66,9 +66,6 @@ def process_file():
     session['pdf_path'] = pdf_path
     return redirect(url_for('result'))
 
-# this route is just for testing purposes while I play with placeholder pdf
-# we can remove it when pdf generation of our dynamic material is complete if
-# we want to do this differently..
 @app.route('/result')
 def result():
     pdf_path = session['pdf_path']
@@ -76,7 +73,6 @@ def result():
 
 @app.route('/send', methods=['GET', 'POST'])
 def send():
-    #error = 'no error'
     message = Mail(
         from_email='class-scribe@mail.com',
         to_emails='emctackett@gmail.com',
@@ -90,29 +86,9 @@ def send():
         print(response.headers)
     except Exception as e:
         print(e)
-        #error = e.message
+
     return 'hello'
-
-# @app.route('/getTranscription')
-# def get_scribe():
-#     #hardcoded for testing purposes, this will be a parameter of get_scribe and will follow the process file route
-#     filename = 'clip_0.1.mp3'
-#     with open(os.path.join(app.config['UPLOAD_FOLDER'], filename), 'rb') as audio_file:
-#         speech_recognition_results = speech_to_text.recognize(
-#             audio=audio_file,
-#             content_type='audio/mp3',
-#             word_alternatives_threshold=0.9,
-#         ).get_result()
-#
-#     transcript = []
-#     for portion in speech_recognition_results['results']:
-#         #timestamp = portion['word_alternatives'][0]['start_time']
-#         text = portion['alternatives'][0]['transcript']
-#         #text_data = dict({'timestamp': timestamp, 'text': text})
-#         #transcript.append(text_data)
-#         transcript.append(text)
-#     return ('<br><br>').join(transcript)
-
+    
 @app.route('/about')
 def about():
     return render_template('about.html')

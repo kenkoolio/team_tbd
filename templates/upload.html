@@ -4,11 +4,17 @@
 
 {% block content %}
 <div class="container-lg">
-<form method="POST" action="/upload" enctype="multipart/form-data">
+<form method="POST" action="/upload" enctype="multipart/form-data" id='upload_form'>
   <div class="form-group">
     <label for="video_file">Upload your video</label>
     <input type="file" class="form-control-file" name="file" id="file" accept="video/*">
   </div>
+  <div class="form-group">
+  <label for="time_interval">Screenshot Time Interval (seconds)</label>
+  <input type="range" id="time_interval" name="time_interval"
+         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value);">
+  <p id="slider_label">60</p>
+</div>
   <button id="upload-submit" type="submit" value="Upload" class="btn btn-primary">Submit</button>
 </form>
 </div>

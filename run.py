@@ -61,7 +61,7 @@ def process_file():
     filename = session['filename']
     time_interval = session['time_interval']
     folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
-    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], 60, 'slides')
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
 #    session['segments'] = segments
     print(segments)
     image_text = create_imagetext_dictionary(segments)
@@ -70,13 +70,18 @@ def process_file():
     print(image_text)
     return render_template("editTranscription.html", image_text=image_text)
 
-'''
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
 
-    else:
-'''
+@app.route('/updateTranscription', methods=['POST'])
+def update_transcription():
+    if request.method == 'POST':
+        #print (request.get_json(force=True))
+        #print(request.values)
+        updated_text = request.form
+
+        #placeholder
+        return render_template("index.html")
+
+
 # this route is just for testing purposes while I play with placeholder pdf
 # we can remove it when pdf generation of our dynamic material is complete if
 # we want to do this differently..

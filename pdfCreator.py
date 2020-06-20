@@ -55,5 +55,5 @@ def create_pdf(filename, segments, output_dir):
         return output_pdf_name
     
     except Exception as e:
-        Print(f"Exception in 'create_pdf'': {e}")
+        print(f"Exception in 'create_pdf': {e}")
         raise

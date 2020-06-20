@@ -9,10 +9,13 @@
   <p class="lead">Your notes are ready!  Download or print them for future use.</p>
   <hr class="my-4">
   <p>Follow the link below to receive your free transcription.</p>
-  <a class="btn btn-primary btn-lg" href="/upload" role="button">Get your notes</a>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Print</a>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Download</a>
 </div>
 <div class="d-flex justify-content-center p-5 mb-5">
-  <embed src="{{pdf}}" width="800px" height="900px" />
+  <div class="embed-responsive embed-responsive-1by1 w-75">
+    <iframe src="{{pdf}}" class="embed-responsive-item"></iframe>
+  </div>
 </div>
 
 {% endblock %}

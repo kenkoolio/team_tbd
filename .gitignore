@@ -4,3 +4,4 @@ static/audio
 static/media
 .DS_Store
 slides
+sendgrid.env

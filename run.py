@@ -1,9 +1,9 @@
 import os
-from flask import Flask, render_template, flash, request, session, redirect, url_for
+from flask import Flask, render_template, flash, request, session, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 # from ibm_watson import SpeechToTextV1
 # from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from spliceAndProcess import spliceAndProcess
+from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
@@ -60,9 +60,38 @@ def process_file():
     filename = session['filename']
     time_interval = session['time_interval']
     folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
-    pdf_path = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
-    session['pdf_path'] = pdf_path
-    return redirect(url_for('result'))
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
+#    session['segments'] = segments
+    print(segments)
+    image_text = create_imagetext_dictionary(segments)
+#    session['pdf_path'] = pdf_path
+#    return redirect(url_for('result'))
+    print(image_text)
+    return render_template("editTranscription.html", image_text=image_text)
+
+
+@app.route('/updateTranscription', methods=['POST'])
+def update_transcription():
+    if request.method == 'POST':
+        #print (request.get_json(force=True))
+        #print(request.values)
+        updated_text = request.form
+
+        segments = []
+        for index, key in enumerate(updated_text):
+            segments.append(Segment(0,0))
+            segments[index].imagePath = key
+            segments[index].text = updated_text[key]
+            print(segments[index])
+
+        filename = session['filename']
+        folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+        pdf_path = generateDocument(filename, segments, folderName)
+
+
+        #placeholder
+        return render_template("result.html", pdf=pdf_path)
+
 
 # this route is just for testing purposes while I play with placeholder pdf
 # we can remove it when pdf generation of our dynamic material is complete if

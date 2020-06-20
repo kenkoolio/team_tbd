@@ -4,8 +4,6 @@ from flask import Flask, render_template, flash, request, session, redirect, url
 from werkzeug.utils import secure_filename
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
-# from ibm_watson import SpeechToTextV1
-# from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from spliceAndProcess import spliceAndProcess
 import json
 
@@ -15,13 +13,6 @@ ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = os.environ.get('SESSION_KEY')
-
-# authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
-# speech_to_text = SpeechToTextV1(
-#     authenticator=authenticator
-# )
-# speech_to_text.set_service_url(os.environ.get('API_URL'))
-# speech_to_text.set_disable_ssl_verification(True)
 
 
 def allowed_file(filename):
@@ -103,6 +94,7 @@ def send():
     except Exception as e:
         print(e)
 
+    flash('Email sent! You may upload another video file now.')
     return redirect(url_for('upload'))
 
 

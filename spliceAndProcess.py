@@ -10,6 +10,7 @@
 import os  # for file handling
 # this package will have to be installed to the environment to be included.
 # to get this package into conda, run from terminal: conda install -c conda-forge moviepy
+# pip install moviepy also works if you use pip; added to requirements.txt
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 from typing import List
@@ -133,7 +134,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
 
     # create document
     pathToDocument = generateDocument(segments, output_dir)
-	
+
 	# clean up the temp folder of data files no longer needed.
 	# code goes here
 

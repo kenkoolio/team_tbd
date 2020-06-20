@@ -1,8 +1,8 @@
-# Noah says:
-# this file is currently a stub to be integrated once we know the structure of our program.
-# the Current functionality is to take a video file path, and spit out slides and audio
-# segments from that video file, with the intention that later we would send those
-# audio segments to get transcribed prior to creating the document.
+# This file's functionality is to take a video file path, and spit out slides and audio
+# segments from that video file, then to send those
+# audio segments to get transcribed, and finally creating a document.
+# The document is then returned from the main function spliceAndProcess.
+#
 # still do to: probably overlap the audio to get better transcription.
 #
 # example execution of the main function is at the bottom
@@ -16,6 +16,8 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 from typing import List
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+import string
+import random
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -68,6 +70,14 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
     for seg in segments:
         seg.audioPath = output_dir + "/clip_" + str(seg.startTime) + ".mp3"
         seg.video.audio.write_audiofile(seg.audioPath)
+
+
+def generateTranscriptionsFake(segments: List[Segment]):
+    for seg in segments:
+        paragraph = " ".join(" ".join(
+            "".join([random.choice(string.ascii_letters) for i in range(random.randrange(2, 15))]) for _ in
+            range(random.randrange(5, 20))) + '.' for i in range(random.randrange(4, 8)))
+        seg.text = paragraph
 
 
 def generateTranscriptions(segments: List[Segment]):
@@ -130,7 +140,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateAudioClips(clip, segments, output_dir)
 
     # create transcriptions of audio
-    generateTranscriptions(segments)
+    generateTranscriptionsFake(segments)
 
     # create document
     pathToDocument = generateDocument(segments, output_dir)

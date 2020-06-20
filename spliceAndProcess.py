@@ -106,8 +106,8 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
 
 
 # example function execution
-# movieName = 'testVid.mp4'  # name of the video
-# movieFolder = ''  # path to folder containing the video
-# outputPath = 'slides'  # temp dir to store the files
-# timeIncrement = 90.0  # time per slide in seconds
-# spliceAndProcess(movieName, movieFolder, timeIncrement, outputPath)
+#movieName = 'testVid.mp4'  # name of the video
+#movieFolder = ''  # path to folder containing the video
+#outputPath = 'slides'  # temp dir to store the files
+#timeIncrement = 90.0  # time per slide in seconds
+#spliceAndProcess(movieName, movieFolder, timeIncrement, outputPath)

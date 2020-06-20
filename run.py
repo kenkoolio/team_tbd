@@ -3,7 +3,7 @@ from flask import Flask, render_template, flash, request, session, redirect, url
 from werkzeug.utils import secure_filename
 from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from spliceAndProcess import spliceAndProcess
+from spliceAndProcess import spliceAndProcess, Segment
 import json
 UPLOAD_FOLDER='./static/media'
 ALLOWED_EXTENSIONS = {'wav', 'mp4', 'avi'}

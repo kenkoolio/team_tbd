@@ -5,6 +5,8 @@
 {% block content %}
 <div class="container-lg">
   <form method="POST" action="/updateTranscription" id='update_form'>
+    <button type="submit" class="btn btn-primary my-4">Accept and View PDF</button>
+
     {% for segment in image_text %}
     <div class="form-group">
       <figure class="figure">
@@ -16,7 +18,7 @@
       </div>
     {% endfor %}
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary my-4">Accept and View PDF</button>
   </form>
 </div>
 {% endblock %}

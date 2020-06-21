@@ -1,5 +1,3 @@
-Summer 2020 BeaverHacks
-
 # :memo: [Scribe](https://class-scribe.herokuapp.com/)
 
 Scribe is an accessability-focused application that is meant to help students, especially deaf and hard-of-hearing students, to obtain accurate and clear transcriptions of lecture recordings.
@@ -30,6 +28,8 @@ Scribe also has many other possible uses for thoroughly documenting any type of 
 - [Noah Johnston](https://github.com/NDJ-1701)
 - [Ken Nguyen](https://github.com/kenkoolio)
 - [Elizabeth Tackett](https://github.com/emtackett)
+
+Scribe was created for the Summer 2020 BeaverHacks Hackathon
 
 ## 💻 Work locally:
 - Clone the repository: `git clone https://github.com/kenkoolio/team_tbd.git`

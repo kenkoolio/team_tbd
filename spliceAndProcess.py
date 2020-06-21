@@ -22,6 +22,7 @@ import random
 import srt
 from fpdf import FPDF, set_global
 from googletrans import Translator
+import datetime
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -109,6 +110,11 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
         seg.video.audio.write_audiofile(seg.audioPath)
 
 
+def getTimeStamp(segment):
+    timestamp = '[' + str(datetime.timedelta(seconds=segment.startTime)) + '-' + str(
+        datetime.timedelta(seconds=segment.endTime)).split(".")[0] + "]\n"
+    return timestamp
+
 # if a captions file exists, parse that instead of transcription
 def sortCaptions(segments: List[Segment], captions_file_path):
     captionsBlob = None
@@ -122,7 +128,8 @@ def sortCaptions(segments: List[Segment], captions_file_path):
         for seg in segments:
             if seg.startTime <= startSecond < seg.endTime:
                 if seg.text is None:
-                    seg.text = text
+                    timestamp = getTimeStamp(seg)
+                    seg.text = timestamp + text
                 else:
                     seg.text += " " + text
                 break
@@ -133,7 +140,9 @@ def generateTranscriptionsFake(segments: List[Segment]):
         paragraph = " ".join(" ".join(
             "".join([random.choice(string.ascii_letters) for i in range(random.randrange(2, 15))]) for _ in
             range(random.randrange(5, 20))) + '.' for i in range(random.randrange(4, 8)))
-        seg.text = paragraph
+        timestamp = getTimeStamp(seg)
+        seg.text = timestamp
+        seg.text += paragraph
 
 
 def generateTranscriptions(segments: List[Segment]):
@@ -154,7 +163,9 @@ def generateTranscriptions(segments: List[Segment]):
             # text_data = dict({'timestamp': timestamp, 'text': text})
             # transcript.append(text_data)
             transcript.append(text)
-        seg.text = '. '.join(transcript)
+        timestamp = getTimeStamp(seg)
+        seg.text = timestamp
+        seg.text += '. '.join(transcript)
         # print("Finished transcription of segment with text:\n", seg.text)
 
 

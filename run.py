@@ -55,18 +55,23 @@ def upload():
 
 @app.route('/upload-from-url', methods=['POST'])
 def upload_from_url():
-    video_url = request.form["video_url"]
-    if ('youtube.com' in video_url) or ('media.oregonstate.edu' in video_url):
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.mkdir(app.config['UPLOAD_FOLDER'])
+    try:
+        video_url = request.form["video_url"]
+        if ('youtube.com' in video_url) or ('media.oregonstate.edu' in video_url):
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
 
-        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'])
-        session['time_interval'] = int(request.form["time_interval"])
+            session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'])
+            session['time_interval'] = int(request.form["time_interval"])
 
-        return redirect(url_for('process_file'))
-    else:
-        flash('Incorrect Video URL')
-        return redirect(request.url)
+            return redirect(url_for('process_file'))
+        else:
+            flash('Incorrect Video URL')
+            return redirect('upload')
+    except Exception as e:
+        print(f'Error: /upload-from-url route failed: {e}')
+        return redirect('index')
+
 
 
 @app.route('/processFile')

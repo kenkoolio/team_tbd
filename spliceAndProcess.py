@@ -20,7 +20,8 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import string
 import random
 import srt
-from fpdf import FPDF
+from fpdf import FPDF, set_global
+from googletrans import Translator
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -157,6 +158,14 @@ def generateTranscriptions(segments: List[Segment]):
         # print("Finished transcription of segment with text:\n", seg.text)
 
 
+def performTranslation(segments: List[Segment], desired_language):
+    # this should automatically detect the source language and convert to desired
+    translator = Translator()
+    for seg in segments:
+        seg.text = translator.translate(seg.text, dest=desired_language).text
+
+
+set_global("SYSTEM_TTFONTS", os.path.join(os.path.dirname(__file__), 'fonts'))
 class PDF(FPDF):
     def __init__(self, header_title):
         FPDF.__init__(self)
@@ -164,9 +173,9 @@ class PDF(FPDF):
 
     def header(self):
         # Arial bold 15
-        self.set_font('Arial', 'B', 12)
+        self.set_font('CyberBit', 'B', 12)
         # Move to the right
-        self.cell(80)
+        self.cell(50)
         # Title
         self.cell(10, 10, self.headerText)
         # Line break
@@ -177,17 +186,26 @@ class PDF(FPDF):
         # Position at 1.5 cm from bottom
         self.set_y(-15)
         # Arial italic 8
-        self.set_font('Arial', 'I', 8)
+        self.set_font('CyberBit', 'I', 8)
         # Page number
         self.cell(0, 10, 'Page ' + str(self.page_no()) + '/{nb}', 0, 0, 'C')
 
 
 def generateDocument(video_name, segments: List[Segment], output_dir):
     pdf = PDF(video_name)
+    # need outside font to encode foreign characters.
+    # see https://stackoverflow.com/questions/56761449/unicodeencodeerror-latin-1-codec-cant-encode-character-u2013-writing-to
+    # pdf.set_doc_option('core_fonts_encoding', 'utf-8')
+    pdf.core_fonts_encoding = 'utf-8'
+    pdf.add_font("CyberBit", style="", fname="Cyberbit.ttf", uni=True)
+    pdf.add_font("CyberBit", style="B", fname="Cyberbit.ttf", uni=True)
+    pdf.add_font("CyberBit", style="I", fname="Cyberbit.ttf", uni=True)
+    pdf.add_font("CyberBit", style="BI", fname="Cyberbit.ttf", uni=True)
+
     pdf.alias_nb_pages()
     for seg in segments:
         pdf.add_page()
-        pdf.set_font('Times', '', 12)
+        pdf.set_font('CyberBit', '', 12)
         pdf.image(seg.imagePath, 5, None, 200)
         pdf.ln(5)
         pdf.multi_cell(0, 5, seg.text)
@@ -200,7 +218,7 @@ def generateDocument(video_name, segments: List[Segment], output_dir):
 
 # this function does all the stuff listed at the top of this file.
 # based on https://stackoverflow.com/questions/43148590/extract-images-using-opencv-and-python-or-moviepy
-def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides'):
+def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides', translate=False, desired_language='zh-CN'):
     print("video name received", video_name)
     print("video folder received", video_folder)
     # ensure that slide directory exists and is empty
@@ -244,6 +262,11 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
         # create audio clips
         generateAudioClips(clip, segments, output_dir)
         generateTranscriptions(segments)
+
+    # translate to another language if desired
+    translate = True
+    if translate:
+        performTranslation(segments, desired_language)
 
     # create document
     #pathToDocument = generateDocument(video_name, segments, output_dir)

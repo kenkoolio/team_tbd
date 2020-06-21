@@ -11,6 +11,6 @@ function loadscreen(){
 }
 
 // Update the current slider value (each time you drag the slider handle)
-function updateTextInput(val) {
-          document.getElementById('slider_label').textContent=val;
+function updateTextInput(val, which) {
+   document.getElementById(which).textContent=val;
 }

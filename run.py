@@ -1,5 +1,4 @@
 import os
-import requests
 from flask import Flask, render_template, flash, request, session, redirect, url_for, jsonify
 from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
 import base64
@@ -56,17 +55,22 @@ def upload():
 
 @app.route('/upload-from-url', methods=['POST'])
 def upload_from_url():
-    video_url = request.form["video_url"]
-    if ('youtube.com' in video_url) or ('youtu.be' in video_url) or ('oregonstate.edu' in video_url):
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.mkdir(app.config['UPLOAD_FOLDER'])
-            
-        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], 'en')
-        session['time_interval'] = int(request.form["time_interval"])
-        return redirect(url_for('process_file'))
-    else:
-        flash('Incorrect Video URL')
-        return redirect(request.url)
+    try:
+        video_url = request.form["video_url"]
+        if ('youtube.com' in video_url) or ('youtu.be' in video_url) or ('oregonstate.edu' in video_url):
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.mkdir(app.config['UPLOAD_FOLDER'])
+
+            session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], 'en')
+            session['time_interval'] = int(request.form["time_interval"])
+
+            return redirect(url_for('process_file'))
+        else:
+            flash('Incorrect Video URL')
+            return redirect('upload')
+    except Exception as e:
+        print(f'Error: /upload-from-url route failed: {e}')
+        return redirect('index')
 
 
 @app.route('/processFile')

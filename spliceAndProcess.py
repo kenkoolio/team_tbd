@@ -22,6 +22,7 @@ import random
 import srt
 from fpdf import FPDF, set_global
 from googletrans import Translator
+import datetime
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -109,6 +110,11 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
         seg.video.audio.write_audiofile(seg.audioPath)
 
 
+def getTimeStamp(segment):
+    timestamp = '[' + str(datetime.timedelta(seconds=segment.startTime)) + '-' + str(
+        datetime.timedelta(seconds=segment.endTime)).split(".")[0] + "]\n"
+    return timestamp
+
 # if a captions file exists, parse that instead of transcription
 def sortCaptions(segments: List[Segment], captions_file_path):
     captionsBlob = None
@@ -122,7 +128,8 @@ def sortCaptions(segments: List[Segment], captions_file_path):
         for seg in segments:
             if seg.startTime <= startSecond < seg.endTime:
                 if seg.text is None:
-                    seg.text = text
+                    timestamp = getTimeStamp(seg)
+                    seg.text = timestamp + text
                 else:
                     seg.text += " " + text
                 break
@@ -133,7 +140,9 @@ def generateTranscriptionsFake(segments: List[Segment]):
         paragraph = " ".join(" ".join(
             "".join([random.choice(string.ascii_letters) for i in range(random.randrange(2, 15))]) for _ in
             range(random.randrange(5, 20))) + '.' for i in range(random.randrange(4, 8)))
-        seg.text = paragraph
+        timestamp = getTimeStamp(seg)
+        seg.text = timestamp
+        seg.text += paragraph
 
 
 def generateTranscriptions(segments: List[Segment]):
@@ -154,7 +163,9 @@ def generateTranscriptions(segments: List[Segment]):
             # text_data = dict({'timestamp': timestamp, 'text': text})
             # transcript.append(text_data)
             transcript.append(text)
-        seg.text = '. '.join(transcript)
+        timestamp = getTimeStamp(seg)
+        seg.text = timestamp
+        seg.text += '. '.join(transcript)
         # print("Finished transcription of segment with text:\n", seg.text)
 
 
@@ -218,7 +229,7 @@ def generateDocument(video_name, segments: List[Segment], output_dir):
 
 # this function does all the stuff listed at the top of this file.
 # based on https://stackoverflow.com/questions/43148590/extract-images-using-opencv-and-python-or-moviepy
-def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides', translate=False, desired_language='zh-CN'):
+def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides', desired_language='en'):
     print("video name received", video_name)
     print("video folder received", video_folder)
     # ensure that slide directory exists and is empty
@@ -254,17 +265,23 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateSlides(clip, segments, output_dir)
 
     # create transcriptions of audio
-    possible_captions_file = os.path.splitext(fullVideoPath)[0] + ".srt"
+    possible_captions_file = os.path.splitext(fullVideoPath)[0] + '.' + desired_language + ".srt"
+    possible_english_captions_file = os.path.splitext(fullVideoPath)[0] + '.' + 'en' + ".srt"
     # if a captions file exists, parse that instead of transcription
+    translatedCaptions = False
     if os.path.isfile(possible_captions_file):
         sortCaptions(segments, possible_captions_file)
+        translatedCaptions = True
+        print('skip text translation')
+    elif os.path.isfile(possible_english_captions_file):
+        sortCaptions(segments, possible_english_captions_file)
     else:
         # create audio clips
         generateAudioClips(clip, segments, output_dir)
         generateTranscriptions(segments)
 
     # translate to another language if desired
-    if translate:
+    if desired_language != 'en' and not translatedCaptions:
         performTranslation(segments, desired_language)
 
     # create document

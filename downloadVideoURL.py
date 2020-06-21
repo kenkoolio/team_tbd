@@ -48,10 +48,11 @@ def download_youtube(video_url, output_dir, preferred_language_code):
         # print(video.captions.all())  # to list all caption languages available.
         captions = video.captions.get_by_language_code(preferred_language_code)
         if not captions and preferred_language_code != 'en':
-            captions = video.captions.get_by_language_code('en')
+            preferred_language_code = 'en'
+            captions = video.captions.get_by_language_code(preferred_language_code)
         if captions:
             #print(captions)
-            captionsFilePathAndName = os.path.join(output_dir, title + ".srt")
+            captionsFilePathAndName = os.path.join(output_dir, title + '.' + preferred_language_code + ".srt")
             with open(captionsFilePathAndName, "w") as text_file:
                 text_file.write(captions.generate_srt_captions())
 

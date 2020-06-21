@@ -178,7 +178,7 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     generateAudioClips(clip, segments, output_dir)
 
     # create transcriptions of audio
-    generateTranscriptionsFake(segments)
+    generateTranscriptions(segments)
 
     # create document
     #pathToDocument = generateDocument(video_name, segments, output_dir)

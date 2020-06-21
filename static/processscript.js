@@ -13,6 +13,8 @@ function fetchdata(){
      if (response.complete){
         clearTimeout(dataLoop);
         process_complete();
+      }else{
+        dataLoop = setTimeout(fetchdata,7000);
       }
    },
  });
@@ -33,5 +35,5 @@ function process_complete(){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  dataLoop = setTimeout(fetchdata,10000);
+  dataLoop = setTimeout(fetchdata,7000);
 });

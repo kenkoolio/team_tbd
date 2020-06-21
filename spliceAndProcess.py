@@ -19,6 +19,7 @@ from ibm_watson import SpeechToTextV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import string
 import random
+import srt
 from fpdf import FPDF
 
 # setup for ibm watson transcription service
@@ -105,6 +106,25 @@ def generateAudioClips(clip: VideoFileClip, segments: List[Segment], output_dir)
     for seg in segments:
         seg.audioPath = output_dir + "/clip_" + str(seg.startTime) + ".mp3"
         seg.video.audio.write_audiofile(seg.audioPath)
+
+
+# if a captions file exists, parse that instead of transcription
+def sortCaptions(segments: List[Segment], captions_file_path):
+    captionsBlob = None
+    with open(captions_file_path, "r") as captions_file:
+        captionsBlob = captions_file.read()
+    captionsGenerator = srt.parse(captionsBlob)
+
+    for caption in captionsGenerator:
+        startSecond = int(caption.start.total_seconds())
+        text = caption.content
+        for seg in segments:
+            if seg.startTime <= startSecond < seg.endTime:
+                if seg.text is None:
+                    seg.text = text
+                else:
+                    seg.text += " " + text
+                break
 
 
 def generateTranscriptionsFake(segments: List[Segment]):
@@ -215,11 +235,15 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     # create image slides
     generateSlides(clip, segments, output_dir)
 
-    # create audio clips
-    generateAudioClips(clip, segments, output_dir)
-
     # create transcriptions of audio
-    generateTranscriptionsFake(segments)
+    possible_captions_file = os.path.splitext(fullVideoPath)[0] + ".srt"
+    # if a captions file exists, parse that instead of transcription
+    if os.path.isfile(possible_captions_file):
+        sortCaptions(segments, possible_captions_file)
+    else:
+        # create audio clips
+        generateAudioClips(clip, segments, output_dir)
+        generateTranscriptions(segments)
 
     # create document
     #pathToDocument = generateDocument(video_name, segments, output_dir)

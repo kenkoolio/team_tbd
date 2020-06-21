@@ -64,7 +64,7 @@ def upload_from_url():
             if not os.path.exists(app.config['UPLOAD_FOLDER']):
                 os.mkdir(app.config['UPLOAD_FOLDER'])
 
-            session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], 'en')
+            session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], request.form['translation'])
             session['time_interval'] = int(request.form["time_interval"])
             session['translation']=request.form['translation']
             return redirect(url_for('process_file'))
@@ -90,7 +90,7 @@ def process_file():
 #    print(image_text)
     translation=session['translation']
     global p
-    p = Process(target=detachedProcessFile, args=(filename, folderName, time_interval, filepath, True, translation))
+    p = Process(target=detachedProcessFile, args=(filename, folderName, time_interval, filepath, translation))
     p.start()
     script = ['processscript.js']
 #    return render_template("editTranscription.html", image_text=image_text)
@@ -180,8 +180,8 @@ def send():
 
 
 #This is run separately and saves the image_text dictionary in a file
-def detachedProcessFile(filename, folderName, time_interval, filepath, translate, language):
-    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName, translate, language)
+def detachedProcessFile(filename, folderName, time_interval, filepath, language):
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName, language)
     image_text = create_imagetext_dictionary(segments)
     with open(filepath, 'w') as f:
         json.dump(image_text, f)

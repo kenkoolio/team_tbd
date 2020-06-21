@@ -10,15 +10,13 @@ function fetchdata(){
    type: 'post',
    data: JSON.stringify( payload ),
    success: function(response){
-        console.log(response);
-       if (response.complete == 'YES'){
-          process_complete();
-        }
-        //alert(response);
+     if (response.complete){
+        process_complete();
+      }
    },
    complete:function(data){
-   loop2 = setTimeout(fetchdata,10000);
-  }
+     loop2 = setTimeout(fetchdata,10000);
+   }
  });
 }
 

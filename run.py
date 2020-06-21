@@ -100,9 +100,9 @@ def get_process_status():
         filepath = request.get_json(force=True)['filepath']
         #if the file exists, then the detachedProcessFile() function has completed
         if os.path.exists(filepath):
-            complete = 'YES'
+            complete = 1
         else:
-            complete = 'NO'
+            complete = 0
         response = {'complete': complete}
         return jsonify(response)
 

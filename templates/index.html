@@ -4,12 +4,29 @@
 
 {% block content %}
 
-<div class="jumbotron">
-  <h1 class="display-4">Welcome</h1>
-  <p class="lead">This website allows you to upload a mp4 of your class lecture and get a transcription.</p>
-  <hr class="my-4">
-  <p>Follow the link below to receive your free transcription.</p>
-  <a class="btn btn-primary btn-lg" href="/upload" role="button">Get your notes</a>
+<!-- Jumbotron -->
+<div class="jumbotron text-center mdb-color stylish-color-dark white-text mx-2 mb-0">
+  <!-- Title -->
+  <h2 class="card-title h2">Welcome</h2>
+  <!-- Grid row -->
+  <div class="row d-flex justify-content-center">
+    <!-- Grid column -->
+    <div class="col-xl-7 pb-2">
+      <p class="card-text">This website allows you to either upload an mp4 of your class lecture or enter the video link from a supported website, to get a transcription.</p>
+
+    </div>
+    <!-- Grid column -->
+
+  </div>
+  <!-- Grid row -->
+
+  <hr class="my-4 rgba-white-light">
+
+  <div class="pt-2">
+    <a href="/upload" role="button" class="btn btn-outline-white">Get your notes  <i class="far fa-file-pdf"></i></a>
+  </div>
+
 </div>
+<!-- Jumbotron -->
 
 {% endblock %}

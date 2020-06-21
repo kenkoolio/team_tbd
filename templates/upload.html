@@ -3,63 +3,97 @@
 
 
 {% block content %}
-<div class="container-lg">
-<form method="POST" action="/upload" enctype="multipart/form-data" id='upload_form'>
-  <div class="form-group">
-    <label for="video_file">Upload your video</label>
-    <input type="file" class="form-control-file" name="file" id="file" accept="video/*">
-  </div>
-  <div class="form-group">
-  <label for="time_interval">Screenshot Time Interval (seconds)</label>
-  <input type="range" id="time_interval" name="time_interval"
-         min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label');">
-  <p id="slider_label">45</p>
-  <label for="translation">Select language translation:</label>
-  <select id="translation" name="translation">
-    <option value="ar">Arabic</option>
-    <option value="zh-CN">Chinese</option>
-    <option value="en" selected="selected">English</option>
-    <option value="fr">French</option>
-    <option value="de">German</option>
-    <option value="hi">Hindi</option>
-    <option value="ja">Japanese</option>
-    <option value="es">Spanish</option>
-    <option value="ru">Russian</option>
-    <option value="sw">Swahili</option>
-  </select>
-</div>
-  <button id="upload-submit" type="submit" value="Upload" class="btn btn-primary">Submit</button>
-</form>
+<div class="container mt-lg-5 mb-lg-5">
+  <div class="row">
+    <div class="col-sm">
+      <form method="POST" action="/upload" enctype="multipart/form-data" id='upload_form' class="border border-light p-5 stylish-color-dark white-text">
+        <div class="form-group">
+          <label for="video_file"><h5><strong>Upload Your Video</strong></h5></label>
 
-<div>
-  <hr class="my-4">
+          <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+          </div>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file" name="file" accept="video/*"
+              aria-describedby="inputGroupFileAddon01">
+            <label class="custom-file-label" for="file">Choose file</label>
+          </div>
+        </div>
+          <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-light mb-4">
+            *Acceptable formats: .mp4, .wav, .mov
+          </small>
+        </div>
+        <div class="form-group">
+        <label for="time_interval">Screenshot Time Interval (seconds)</label>
+        <div class="d-flex justify-content-center my-4">
+        <div class="w-75">
+          <input type="range" class="custom-range" id="time_interval" name="time_interval" min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label');">
+        </div>
+        <span class="font-weight-bold text-white ml-2 valueSpan2" id="slider_label">45</span>
+      </div>
+
+        <label for="translation">Select language translation:</label>
+        <div class="input-group mb-3">
+        <select class="browser-default custom-select ml-2" id="translation" name="translation">
+          <option value="ar">Arabic</option>
+          <option value="zh-CN">Chinese</option>
+          <option value="en" selected="selected">English</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="hi">Hindi</option>
+          <option value="ja">Japanese</option>
+          <option value="es">Spanish</option>
+          <option value="ru">Russian</option>
+          <option value="sw">Swahili</option>
+        </select>
+      </div>
+    </div>
+        <button id="upload-submit" type="submit" value="Upload" class="btn btn-outline-default waves-effect btn-block">Submit</button>
+      </form>
+    </div>
+
+    <div class="col-sm">
+      <form method="POST" action="/upload-from-url" id='upload_form_from_url' class="border border-light p-5 stylish-color-dark white-text">
+        <div class="form-group">
+          <label for="video_file"><h5><strong>Add Video From Link</strong></h5></label>
+          <!-- Small input -->
+          <input class="form-control" type="text" placeholder="https://www.youtube.com/..." name="video_url" id="video_url" required>
+
+          <small id="defaultRegisterFormPasswordHelpBlock" class="form-text text-light mb-4">
+            *At this time, only Youtube or media.oregonstate.edu accepted
+          </small>
+        </div>
+        <div class="form-group">
+        <label for="time_interval">Screenshot Time Interval (seconds)</label>
+        <div class="d-flex justify-content-center my-4">
+        <div class="w-75">
+          <input type="range" class="custom-range" id="time_interval" name="time_interval" min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label_web');">
+        </div>
+        <span class="font-weight-bold text-white ml-2 valueSpan2" id="slider_label_web">45</span>
+      </div>
+      <label for="translation">Select language translation:</label>
+      <div class="input-group mb-3">
+      <select class="browser-default custom-select ml-2" id="translation" name="translation">
+        <option value="ar">Arabic</option>
+        <option value="zh-CN">Chinese</option>
+        <option value="en" selected="selected">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="hi">Hindi</option>
+        <option value="ja">Japanese</option>
+        <option value="es">Spanish</option>
+        <option value="ru">Russian</option>
+        <option value="sw">Swahili</option>
+      </select>
+      </div>
+      </div>
+        <button id="upload-from-url" type="submit" value="Upload" class="btn btn-outline-default waves-effect btn-block">Submit</button>
+      </form>
+    </div>
+  </div>
 </div>
 
-<form method="POST" action="/upload-from-url" id='upload_form_from_url'>
-  <div class="form-group">
-    <label for="video_file">Choose video from Youtube or media.oregonstate.edu</label>
-    <input type="text" class="form-control-file" name="video_url" id="video_url" required>
-  </div>
-  <div class="form-group">
-  <label for="time_interval">Screenshot Time Interval (seconds)</label>
-  <input type="range" id="time_interval" name="time_interval"
-         min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label_web');">
-  <p id="slider_label_web">45</p>
-  <label for="translation">Select language</label>
-  <select id="translation" name="translation">
-    <option value="ar">Arabic</option>
-    <option value="zh-CN">Chinese</option>
-    <option value="en" selected="selected">English</option>
-    <option value="fr">French</option>
-    <option value="de">German</option>
-    <option value="hi">Hindi</option>
-    <option value="ja">Japanese</option>
-    <option value="es">Spanish</option>
-    <option value="ru">Russian</option>
-    <option value="sw">Swahili</option>
-  </select>
-</div>
-  <button id="upload-from-url" type="submit" value="Upload" class="btn btn-primary">Submit</button>
-</form>
-</div>
+
+
 {% endblock %}

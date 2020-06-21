@@ -49,6 +49,7 @@ def upload():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             session['filename'] = filename
             session['time_interval']=int(request.form['time_interval'])
+            session['translation']=request.form['translation']
             return redirect(url_for('process_file'))
     else:
         script = ["uploadscript.js"]
@@ -65,7 +66,7 @@ def upload_from_url():
 
             session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], 'en')
             session['time_interval'] = int(request.form["time_interval"])
-
+            session['translation']=request.form['translation']
             return redirect(url_for('process_file'))
         else:
             flash('Incorrect Video URL')
@@ -87,8 +88,9 @@ def process_file():
 #    session['pdf_path'] = pdf_path
 #    return redirect(url_for('result'))
 #    print(image_text)
+    translation=session['translation']
     global p
-    p = Process(target=detachedProcessFile, args=(filename, folderName, time_interval, filepath))
+    p = Process(target=detachedProcessFile, args=(filename, folderName, time_interval, filepath, True, translation))
     p.start()
     script = ['processscript.js']
 #    return render_template("editTranscription.html", image_text=image_text)
@@ -178,8 +180,8 @@ def send():
 
 
 #This is run separately and saves the image_text dictionary in a file
-def detachedProcessFile(filename, folderName, time_interval, filepath):
-    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
+def detachedProcessFile(filename, folderName, time_interval, filepath, translate, language):
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName, translate, language)
     image_text = create_imagetext_dictionary(segments)
     with open(filepath, 'w') as f:
         json.dump(image_text, f)

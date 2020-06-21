@@ -99,19 +99,12 @@ def process_file():
 def get_process_status():
     if request.method == 'POST':
         filepath = request.get_json(force=True)['filepath']
+        response = {'complete': 0}
 
         # if the file exists, then the detachedProcessFile() function has completed
-        # if os.path.exists(filepath):
-        #     complete = 1
-        # else:
-        #     complete = 0
-        # response = {'complete': complete}
+        if os.path.exists(filepath):
+            response['complete'] = 1
 
-        while not (os.path.exists(filepath)):
-            time.sleep(1)
-            print('waiting')
-
-        response = {'complete': 1}
         return jsonify(response)
 
 @app.route('/processComplete', methods=['POST'])

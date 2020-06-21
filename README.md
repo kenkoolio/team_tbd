@@ -10,11 +10,6 @@ pip install -r requirements.txt
 export API_KEY=[API KEY]
 export API_URL=[API URL]
 export SESSION_KEY=[SESSION KEY]
-
-# setting up sendgrid locally
-#export SENDGRID_API_KEY='YOUR_API_KEY' >> sendgrid.env
-#echo "sendgrid.env" >> .gitignore
-#source ./sendgrid.env
 export SENDGRID_API_KEY=[SENDGRID_API_KEY]
 ```
 

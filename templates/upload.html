@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Upload Media{% endblock %}
+{% block title %}Scribe: Upload Media{% endblock %}
 
 
 {% block content %}
@@ -12,8 +12,8 @@
   <div class="form-group">
   <label for="time_interval">Screenshot Time Interval (seconds)</label>
   <input type="range" id="time_interval" name="time_interval"
-         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value, 'slider_label');">
-  <p id="slider_label">60</p>
+         min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label');">
+  <p id="slider_label">45</p>
 </div>
   <button id="upload-submit" type="submit" value="Upload" class="btn btn-primary">Submit</button>
 </form>
@@ -30,8 +30,8 @@
   <div class="form-group">
   <label for="time_interval">Screenshot Time Interval (seconds)</label>
   <input type="range" id="time_interval" name="time_interval"
-         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value, 'slider_label_web');">
-  <p id="slider_label_web">60</p>
+         min="10" max="120" value="45" step="5" onchange="updateTextInput(this.value, 'slider_label_web');">
+  <p id="slider_label_web">45</p>
 </div>
   <button id="upload-from-url" type="submit" value="Upload" class="btn btn-primary">Submit</button>
 </form>

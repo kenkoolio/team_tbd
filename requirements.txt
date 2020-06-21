@@ -31,3 +31,5 @@ typing-extensions==3.7.4.2
 urllib3==1.25.9
 websocket-client==0.48.0
 Werkzeug==1.0.1
+srt==3.3.0
+googletrans==3.0.0

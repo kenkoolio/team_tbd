@@ -10,12 +10,11 @@ pip install -r requirements.txt
 export API_KEY=[API KEY]
 export API_URL=[API URL]
 export SESSION_KEY=[SESSION KEY]
-
-# setting up sendgrid locally
-#export SENDGRID_API_KEY='YOUR_API_KEY' >> sendgrid.env
-#echo "sendgrid.env" >> .gitignore
-#source ./sendgrid.env
 export SENDGRID_API_KEY=[SENDGRID_API_KEY]
+
+# if you're on mac OS High Sierra, you may need the following to run
+# the script locally
+export OBJ_DISABLE_INITIALIZE_FORK_SAFETY=yes
 ```
 
 ##Running the Flask App
@@ -26,4 +25,4 @@ export FLASK_APP=run.py
 python -m flask run -h 0.0.0.0 -p XXXX --reload
 ```
 
-Go to: http://http://0.0.0.0/:XXXX
+Go to: http://0.0.0.0/:XXXX

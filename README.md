@@ -1,6 +1,6 @@
 Summer 2020 BeaverHacks
 
-# :memo: Scribe
+# :memo: [Scribe](https://class-scribe.herokuapp.com/)
 
 Scribe is an accessability-focused application that is meant to help students, especially deaf and hard-of-hearing students, to obtain accurate and clear transcriptions of lecture recordings.
 
@@ -10,7 +10,8 @@ Additional features include language translation to a language of the user's cho
 
 Scribe also has many other possible uses for thoroughly documenting any type of lecture or presentation.
 
-[Scribe Homepage](https://class-scribe.herokuapp.com/)
+## :earth_americas: View on the web:
+[Scribe](https://class-scribe.herokuapp.com/) is hosted by Heroku.
 
 ## :hammer: Scribe is built with:
 - [Heroku](https://www.heroku.com/)
@@ -30,9 +31,6 @@ Scribe also has many other possible uses for thoroughly documenting any type of 
 - [Ken Nguyen](https://github.com/kenkoolio)
 - [Elizabeth Tackett](https://github.com/emtackett)
 
-## :earth_americas: View on the web:
-[Scribe](https://class-scribe.herokuapp.com/) is hosted by Heroku.
-
 ## 💻 Work locally:
 - Clone the repository: `git clone https://github.com/kenkoolio/team_tbd.git`
 - From the command line, navigate into the `team_tbd` directory.
@@ -49,8 +47,7 @@ export API_URL=[IBM_WATSON_API_URL]
 export SESSION_KEY=[SESSION KEY]
 export SENDGRID_API_KEY=[SENDGRID_API_KEY]
 
-# if you're on mac OS High Sierra, you may need the following to run
-# the script locally
+# On mac OS High Sierra, you may need the following
 export OBJ_DISABLE_INITIALIZE_FORK_SAFETY=yes
 ```
 - Note that you will need to obtain an `IBM_WATSON_API_KEY` for `IBM_WATSON_API_URL` from [Cloud IBM Watson](https://cloud.ibm.com/docs/speech-to-text?topic=speech-to-text-languageCreate), as well as a `SENDGRID_API_KEY` from [SendGrid](https://sendgrid.com/).
@@ -62,4 +59,4 @@ source ./venv/bin/activate
 export FLASK_APP=run.py
 python -m flask run -h 0.0.0.0 -p XXXX --reload
 ```
-- Visit http://0.0.0.0/:XXXX in your browser
+- Visit `http://0.0.0.0/:XXXX` in your browser.

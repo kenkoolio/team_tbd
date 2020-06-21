@@ -38,9 +38,7 @@ function process_complete(){
      type: 'post',
      data: JSON.stringify( payload ),
      success: function(response){
-          console.log(response);
-           $('body').html(request.response)
-          //alert(response);
+        $('body').html(response)
      }
    });
 }

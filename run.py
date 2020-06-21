@@ -8,6 +8,7 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, File
 from downloadVideoURL import download_video
 from multiprocessing import Process
 import json
+import time
 
 
 UPLOAD_FOLDER='./static/media'
@@ -98,12 +99,19 @@ def process_file():
 def get_process_status():
     if request.method == 'POST':
         filepath = request.get_json(force=True)['filepath']
-        #if the file exists, then the detachedProcessFile() function has completed
-        if os.path.exists(filepath):
-            complete = 1
-        else:
-            complete = 0
-        response = {'complete': complete}
+
+        # if the file exists, then the detachedProcessFile() function has completed
+        # if os.path.exists(filepath):
+        #     complete = 1
+        # else:
+        #     complete = 0
+        # response = {'complete': complete}
+
+        while not (os.path.exists(filepath)):
+            time.sleep(1)
+            print('waiting')
+
+        response = {'complete': 1}
         return jsonify(response)
 
 @app.route('/processComplete', methods=['POST'])

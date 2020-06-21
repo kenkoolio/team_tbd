@@ -1,42 +1,37 @@
 var payload = {filepath:null};
-var loop
-var loop2
+var dataLoop = null;
 
 //Continue to ping the server until it indicates the transcription has completed
 function fetchdata(){
-  payload.filepath = document.getElementById("filepath").value
+  payload.filepath = $('#filepath').val() || '';
+
   $.ajax({
    url: '/processStatus',
    type: 'post',
-   data: JSON.stringify( payload ),
+   data: JSON.stringify(payload),
    success: function(response){
      if (response.complete){
+        clearTimeout(dataLoop);
         process_complete();
       }
    },
-   complete:function(data){
-     loop2 = setTimeout(fetchdata,10000);
-   }
  });
 }
 
-document.addEventListener('DOMContentLoaded', function(){loop = setTimeout(fetchdata,10000);})
-
-// $(document).ready(function(){
-//  setTimeout(fetchdata,4000);
-// });
-
 //Once this happens, make a post request to load the editTranscription page
 function process_complete(){
-    clearTimeout(loop);
-    clearTimeout(loop2);
-    payload.filepath = document.getElementById("filepath").value
+    payload.filepath = document.getElementById("filepath").value;
+
     $.ajax({
      url: '/processComplete',
      type: 'post',
-     data: JSON.stringify( payload ),
+     data: JSON.stringify(payload),
      success: function(response){
         $('body').html(response)
      }
    });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  dataLoop = setTimeout(fetchdata,10000);
+});

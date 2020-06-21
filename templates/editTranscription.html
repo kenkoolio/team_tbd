@@ -3,22 +3,34 @@
 
 
 {% block content %}
-<div class="container-lg">
+<div class="row d-flex justify-content-center mt-lg-5">
+  <!--Grid column-->
+<div class="col-md-8">
   <form method="POST" action="/updateTranscription" id='update_form'>
     <button type="submit" class="btn btn-primary my-4">Accept and View PDF</button>
 
     {% for segment in image_text %}
     <div class="form-group">
+      <div class="text-center">
       <figure class="figure">
-      <img src="../{{segment.image}}" class="figure-img img-fluid rounded" alt="Screenshot of Video">
+      <img src="../{{segment.image}}" class="figure-img img-fluid rounded border border-dark" alt="Screenshot of Video">
       </figure>
+    </div>
+
       <br />
-      <label for=segment[image]>Update Transcription</label><br />
-      <textarea id={{segment.image}} name={{segment.image}} rows="5" cols="90"> {{segment.text}}</textarea>
+
+      <!--Textarea with icon prefix-->
+      <div class="md-form amber-textarea active-amber-textarea">
+        <i class="fas fa-pencil-alt prefix"></i>
+        <textarea id={{segment.image}} name={{segment.image}} class="md-textarea form-control" overflow-y="scroll" rows="6" cols="90">{{segment.text}}</textarea>
+        <label for=segment[image]>Edit Transcription for accuracy</label>
       </div>
     {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary btn-rounded waves-effect btn-block">Accept and View PDF</button>
 
-    <button type="submit" class="btn btn-primary my-4">Accept and View PDF</button>
   </form>
+  </div>
 </div>
+
 {% endblock %}

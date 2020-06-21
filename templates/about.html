@@ -3,13 +3,79 @@
 
 
 {% block content %}
+<div class="jumbotron mdb-color lighten-5 mb-0">
+  <!--Grid column-->
+<div class="col-md-9 mx-5">
+<ul class="nav nav-pills nav-fill mb-2 btn white " id="pills-tab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active btn btn-mdb-color" id="pills-scribe-tab" data-toggle="pill" href="#pills-scribe" role="tab"
+      aria-controls="pills-home" aria-selected="true">Scribe</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link btn btn-mdb-color" id="pills-noah-tab" data-toggle="pill" href="#pills-noah" role="tab"
+      aria-controls="pills-profile" aria-selected="false">Noah Johnston</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link btn btn-mdb-color" id="pills-mae-tab" data-toggle="pill" href="#pills-mae" role="tab"
+      aria-controls="pills-contact" aria-selected="false">Mae LaPresta</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link btn btn-mdb-color" id="pills-ken-tab" data-toggle="pill" href="#pills-ken" role="tab"
+      aria-controls="pills-contact" aria-selected="false">Ken (Huy) Nguyen</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link btn btn-mdb-color" id="pills-elizabeth-tab" data-toggle="pill" href="#pills-elizabeth" role="tab"
+      aria-controls="pills-contact" aria-selected="false">Elizabeth Tackett</a>
+  </li>
+</ul>
+<div class="tab-content pt-1 pl-1" id="pills-tabContent">
+      <div class="tab-pane fade show active mdb-color darken-2 text-white" id="pills-scribe" role="tabpanel" aria-labelledby="pills-scribe-tab">
+      <div class="container">
+      <h4 class="h4-responsive">About</h4>
+      <p>Scribe is an accessibility-focused application that is meant to help students, especially deaf and hard-of-hearing students or ESL students, to obtain text transcriptions of lecture recordings.
+      </p>
+      <p>
+        A student or professor can easily upload a locally downloaded mp4 file, or provide a web link to a video hosted online by YouTube or the user's school. If video captions are available as a part of the video uploaded, those will be used. Otherwise, a video transcription will be generated using IBM's Watson AI. A PDF will be produced that includes transcribed text interlaced with screenshots of the uploaded video at the user selected time intervals The user can then download, print, or e-mail the resulting PDF.
+      </p>
+      <p>
+        Optional features include language translation to a language of the user's choosing, and user-editing of the resulting transcription to ensure the best accuracy possible in the final transcription PDF.
+      </p>
+      <p>
+        Scribe also has many other possible uses for thoroughly documenting any type of lecture or presentation.
+      </p>
+      <br />
+    <h4 class="h4-responsive">Technologies</h4>
+    <ul class="list-unstyled">
+      <li>Scribe is built with:
+        <ul>
+          <li>Heroku, hosting</li>
+          <li>IBM Watson, AI based voice to text</li>
+          <li>MoviePy, video and audio editing</li>
+          <li>SendGrid, email</li>
+          <li>googletrans, text to text language translation</li>
+          <li>FPDF, PDF document generation</li>
+          <li>Flask</li>
+          <li>jQuery </li>
+          <li>Bootstrap</li>
+          <li>MDB</li>
+          <li>Flask</li>
+        </ul>
+      </li>
+    </ul>
+    </div>
+    </div>
 
-<div class="jumbotron">
-  <h1 class="display-4">Welcome</h1>
-  <p class="lead">This website allows you to upload a mp4 of your class lecture and get a transcription.</p>
-  <hr class="my-4">
-  <p>Follow the link below to receive your free transcription.</p>
-  <a class="btn btn-primary btn-lg" href="/upload" role="button">Get your notes</a>
+
+  <div class="tab-pane fade mdb-color darken-2 text-white" id="pills-noah" role="tabpanel" aria-labelledby="pills-noah-tab"><div class="container"> Noah Bio</div></div>
+
+  <div class="tab-pane fade mdb-color darken-2 text-white" id="pills-mae" role="tabpanel" aria-labelledby="pills-mae-tab"><div class="container">Mae Bio</div></div>
+
+    <div class="tab-pane fade mdb-color darken-2 text-white" id="pills-ken" role="tabpanel" aria-labelledby="pills-ken-tab"><div class="container">
+    Ken bio</div></div>
+    <div class="tab-pane fade mdb-color darken-2 text-white" id="pills-elizabeth" role="tabpanel" aria-labelledby="pills-elizabeth-tab"> <div class="container">Elizabeth Bio</div></div>
 </div>
 
+
+</div>
+</div>
 {% endblock %}

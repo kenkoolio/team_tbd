@@ -11,4 +11,21 @@ $(document).ready(function () {
     e.preventDefault();
     window.location = e.target.href;
   });
+
+  $('#email-pdf').click((e) => {
+    e.preventDefault();
+    $('#email-form-container').toggleClass('d-none');
+  });
+
+  $('#send-email').click(function(e) {
+    e.preventDefault();
+    let pdfPath = $('#pdf').attr('src');
+    let form = $(this).closest('form');
+    let input = $('<input>')
+                  .attr('type', 'hidden')
+                  .attr('name', 'pdf')
+                  .val(pdfPath)
+    form.append(input);
+    form.submit();
+  });
 });

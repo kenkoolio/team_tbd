@@ -264,7 +264,6 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
         generateTranscriptions(segments)
 
     # translate to another language if desired
-    translate = True
     if translate:
         performTranslation(segments, desired_language)
 

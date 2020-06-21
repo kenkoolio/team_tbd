@@ -57,11 +57,11 @@ def upload():
 @app.route('/upload-from-url', methods=['POST'])
 def upload_from_url():
     video_url = request.form["video_url"]
-    if ('youtube.com' in video_url) or ('oregonstate.edu' in video_url):
+    if ('youtube.com' in video_url) or ('youtu.be' in video_url) or ('oregonstate.edu' in video_url):
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.mkdir(app.config['UPLOAD_FOLDER'])
-
-        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'])
+            
+        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'], 'en')
         session['time_interval'] = int(request.form["time_interval"])
         return redirect(url_for('process_file'))
     else:
@@ -73,7 +73,7 @@ def upload_from_url():
 def process_file():
     filename = session['filename']
     time_interval = session['time_interval']
-    folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+    folderName = os.path.join(app.config['UPLOAD_FOLDER'], filename.replace('.', ''))
     segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
 #    session['segments'] = segments
     print(segments)
@@ -119,10 +119,10 @@ def send():
     pdf_filename = pdf_path.split('static/pdf/')[-1]
 
     message = Mail(
-        from_email='class-scribe@mail.com',
+        from_email='scribe@mail.com',
         to_emails=receiver,
-        subject='Class Scribe: Your notes',
-        html_content="<p>Class Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")
+        subject='Scribe: Your notes.',
+        html_content="<p>Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")
 
     with open(pdf_path, 'rb') as f:
         data = f.read()

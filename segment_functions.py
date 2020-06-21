@@ -8,7 +8,7 @@ def create_imagetext_dictionary(segments: List[Segment]):
             'image' : segment.imagePath,
             'text' : segment.text
         })
-    print(image_text)
+
     return image_text
 
 def update_text(segments: List[Segment],image_text):

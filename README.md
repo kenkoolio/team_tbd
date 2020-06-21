@@ -11,6 +11,10 @@ export API_KEY=[API KEY]
 export API_URL=[API URL]
 export SESSION_KEY=[SESSION KEY]
 export SENDGRID_API_KEY=[SENDGRID_API_KEY]
+
+# if you're on mac OS High Sierra, you may need the following to run
+# the script locally
+export OBJ_DISABLE_INITIALIZE_FORK_SAFETY=yes
 ```
 
 ##Running the Flask App

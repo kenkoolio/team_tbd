@@ -6,7 +6,9 @@ from werkzeug.utils import secure_filename
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
 from downloadVideoURL import download_video
+from multiprocessing import Process
 import json
+import time
 
 
 UPLOAD_FOLDER='./static/media'
@@ -77,16 +79,42 @@ def upload_from_url():
 def process_file():
     filename = session['filename']
     time_interval = session['time_interval']
-    folderName = os.path.join(app.config['UPLOAD_FOLDER'], filename.replace('.', ''))
-    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
-#    session['segments'] = segments
-    print(segments)
-    image_text = create_imagetext_dictionary(segments)
+    folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
+    filepath = folderName + '/' + filename + '.json'
+    #segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
+#    print(segments)
+#    image_text = create_imagetext_dictionary(segments)
 #    session['pdf_path'] = pdf_path
 #    return redirect(url_for('result'))
-    print(image_text)
-    return render_template("editTranscription.html", image_text=image_text)
+#    print(image_text)
+    global p
+    p = Process(target=detachedProcessFile, args=(filename, folderName, time_interval, filepath))
+    p.start()
+    script = ['processscript.js']
+#    return render_template("editTranscription.html", image_text=image_text)
+    return render_template("processing.html", filepath = filepath, jsscripts = script)
 
+@app.route('/processStatus', methods=['POST'])
+def get_process_status():
+    if request.method == 'POST':
+        filepath = request.get_json(force=True)['filepath']
+        response = {'complete': 0}
+
+        # if the file exists, then the detachedProcessFile() function has completed
+        if os.path.exists(filepath):
+            response['complete'] = 1
+
+        return jsonify(response)
+
+@app.route('/processComplete', methods=['POST'])
+def process_complete():
+    if request.method == 'POST':
+        filepath = request.get_json(force=True)['filepath']
+        #get the saved to file image_text dictionary,
+        #this was done in detachedProcessFile
+        f = open(filepath)
+        image_text = json.load(f)
+        return render_template("editTranscription.html", image_text=image_text)
 
 @app.route('/updateTranscription', methods=['POST'])
 def update_transcription():
@@ -106,8 +134,6 @@ def update_transcription():
         folderName = os.path.join(app.config['UPLOAD_FOLDER'],filename.replace('.', ''))
         pdf_path = generateDocument(filename, segments, folderName)
 
-
-        #placeholder
         return render_template("result.html", pdf=pdf_path)
 
 
@@ -150,6 +176,13 @@ def send():
     flash('Email sent! You may upload another video file now.')
     return redirect(url_for('upload'))
 
+
+#This is run separately and saves the image_text dictionary in a file
+def detachedProcessFile(filename, folderName, time_interval, filepath):
+    segments = spliceAndProcess(filename, app.config['UPLOAD_FOLDER'], time_interval, folderName)
+    image_text = create_imagetext_dictionary(segments)
+    with open(filepath, 'w') as f:
+        json.dump(image_text, f)
 
 @app.route('/about')
 def about():

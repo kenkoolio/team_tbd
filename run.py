@@ -1,10 +1,12 @@
 import os
+import requests
 from flask import Flask, render_template, flash, request, session, redirect, url_for, jsonify
 from spliceAndProcess import spliceAndProcess, Segment, generateDocument, create_imagetext_dictionary
 import base64
 from werkzeug.utils import secure_filename
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName, FileType, Disposition)
+from downloadVideoURL import download_video
 import json
 
 
@@ -50,6 +52,22 @@ def upload():
     else:
         script = ["uploadscript.js"]
         return render_template("upload.html", jsscripts=script)
+
+
+@app.route('/upload-from-url', methods=['POST'])
+def upload_from_url():
+    video_url = request.form["video_url"]
+    if ('youtube.com' in video_url) or ('oregonstate.edu' in video_url):
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.mkdir(app.config['UPLOAD_FOLDER'])
+
+        session['filename'] = download_video(video_url, app.config['UPLOAD_FOLDER'])
+        session['time_interval'] = int(request.form["time_interval"])
+        return redirect(url_for('process_file'))
+    else:
+        flash('Incorrect Video URL')
+        return redirect(request.url)
+
 
 @app.route('/processFile')
 def process_file():

@@ -12,7 +12,7 @@
   <div class="form-group">
   <label for="time_interval">Screenshot Time Interval (seconds)</label>
   <input type="range" id="time_interval" name="time_interval"
-         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value);">
+         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value, 'slider_label');">
   <p id="slider_label">60</p>
 </div>
   <button id="upload-submit" type="submit" value="Upload" class="btn btn-primary">Submit</button>
@@ -24,14 +24,14 @@
 
 <form method="POST" action="/upload-from-url" id='upload_form_from_url'>
   <div class="form-group">
-    <label for="video_file">Choose video from Youtube or Oregon State University</label>
-    <input type="text" class="form-control-file" name="video_url" id="video_url">
+    <label for="video_file">Choose video from Youtube or media.oregonstate.edu</label>
+    <input type="text" class="form-control-file" name="video_url" id="video_url" required>
   </div>
   <div class="form-group">
   <label for="time_interval">Screenshot Time Interval (seconds)</label>
   <input type="range" id="time_interval" name="time_interval"
-         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value);">
-  <p id="slider_label">60</p>
+         min="20" max="120" value="60" step="15" onchange="updateTextInput(this.value, 'slider_label_web');">
+  <p id="slider_label_web">60</p>
 </div>
   <button id="upload-from-url" type="submit" value="Upload" class="btn btn-primary">Submit</button>
 </form>

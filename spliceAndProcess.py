@@ -21,6 +21,7 @@ import string
 import random
 import srt
 from fpdf import FPDF
+from googletrans import Translator
 
 # setup for ibm watson transcription service
 authenticator = IAMAuthenticator(os.environ.get('API_KEY'))
@@ -157,6 +158,13 @@ def generateTranscriptions(segments: List[Segment]):
         # print("Finished transcription of segment with text:\n", seg.text)
 
 
+def performTranslation(segments: List[Segment], desired_language):
+    # this should automatically detect the source language and convert to desired
+    translator = Translator()
+    for seg in segments:
+        seg.text = translator.translate(seg.text, dest=desired_language).text
+
+
 class PDF(FPDF):
     def __init__(self, header_title):
         FPDF.__init__(self)
@@ -200,7 +208,7 @@ def generateDocument(video_name, segments: List[Segment], output_dir):
 
 # this function does all the stuff listed at the top of this file.
 # based on https://stackoverflow.com/questions/43148590/extract-images-using-opencv-and-python-or-moviepy
-def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides'):
+def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, output_dir='slides', translate=False, desired_language='ja'):
     print("video name received", video_name)
     print("video folder received", video_folder)
     # ensure that slide directory exists and is empty
@@ -244,6 +252,11 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
         # create audio clips
         generateAudioClips(clip, segments, output_dir)
         generateTranscriptions(segments)
+
+    # translate to another language if desired
+    translate = True
+    if translate:
+        performTranslation(segments, desired_language)
 
     # create document
     #pathToDocument = generateDocument(video_name, segments, output_dir)

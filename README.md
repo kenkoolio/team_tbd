@@ -10,7 +10,7 @@ Additional features include language translation to a language of the user's cho
 
 Scribe also has many other possible uses for thoroughly documenting any type of lecture or presentation.
 
-![Scribe Homepage](https://class-scribe.herokuapp.com/)
+[Scribe Homepage](https://class-scribe.herokuapp.com/)
 
 ## :hammer: Scribe is built with:
 - [Heroku](https://www.heroku.com/)

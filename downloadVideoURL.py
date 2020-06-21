@@ -61,7 +61,8 @@ def download_youtube(video_url, output_dir, preferred_language_code):
         extension = '.' + streams[0].mime_type.split('/')[1]
 
         # file_directory = os.path.join(output_dir, title)
-        video.streams.get_by_itag(itag).download(output_path=output_dir, filename=title)
+        #video.streams.get_by_itag(itag).download(output_path=output_dir, filename=title)
+        video.streams.get_highest_resolution().download(output_path=output_dir, filename=title)
 
         return title + extension
     except Exception as e:

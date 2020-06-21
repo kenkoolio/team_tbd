@@ -12,6 +12,7 @@ import os  # for file handling
 # to get this package into conda, run from terminal: conda install -c conda-forge moviepy
 # pip install moviepy also works if you use pip; added to requirements.txt
 from moviepy.video.io.VideoFileClip import VideoFileClip
+import numpy as np  # for numerical operations of audio volume
 
 from typing import List
 from ibm_watson import SpeechToTextV1
@@ -57,10 +58,43 @@ def createOrCleanOutputFolder(output_dir):
             os.remove(os.path.join(output_dir, f))
 
 
+# used to find the lowest value in an array near a specified index
+def getIndexOfLowestValueInRange(arr, startIndex, searchDistance):
+    earliest = max(0, startIndex - searchDistance)
+    latest = min(len(arr) - 1, startIndex + searchDistance)
+    minVolume = 999999
+    minIndex = 0
+    for i in range(earliest, latest + 1):
+        if arr[i] < minVolume:
+            minVolume = arr[i]
+            minIndex = i
+    return minIndex
+
+
+def fineTuneTimeCutoffs(clip, times):
+    # determine sections of greatest silence, to preferably stop between sentences
+    # mainly based on code at:
+    # https://zulko.github.io/blog/2014/07/04/automatic-soccer-highlights-compilations-with-python/
+    silence_window = 5  # the number of seconds to average when looking for best moments of silence.
+    cut = lambda i: clip.audio.subclip(i, i + 1).to_soundarray(fps=10000)
+    volume = lambda array: np.sqrt(((1.0 * array) ** 2).mean())
+    volumes = [volume(cut(i)) for i in range(0, int(clip.duration - 1))]
+    # compute the average volumes over periods of silence_window seconds
+    averaged_volumes = np.array([sum(volumes[i:i + silence_window]) / silence_window
+                                 for i in range(len(volumes) - silence_window)])
+
+    silence_search_distance = 10
+    for i, time in enumerate(times):
+        if i != 0:
+            times[i] = getIndexOfLowestValueInRange(averaged_volumes, times[i], silence_search_distance) + silence_window // 2  # best if safety check was added here
+    print("times after fine tuning: ", times)
+
+
 def generateSlides(clip: VideoFileClip, segments: List[Segment], output_dir):
     for seg in segments:
         slidePath = os.path.join(output_dir, '{}.png'.format(seg.startTime))
-        clip.save_frame(slidePath, seg.startTime)
+        slideMidPoint = (seg.startTime + seg.endTime) // 2
+        clip.save_frame(slidePath, slideMidPoint)
         seg.imagePath = slidePath
 
 
@@ -100,7 +134,7 @@ def generateTranscriptions(segments: List[Segment]):
             # transcript.append(text_data)
             transcript.append(text)
         seg.text = '. '.join(transcript)
-        print("Finished transcription of segment with text:\n", seg.text)
+        # print("Finished transcription of segment with text:\n", seg.text)
 
 
 class PDF(FPDF):
@@ -160,8 +194,15 @@ def spliceAndProcess(video_name, video_folder, time_increment_seconds=60.0, outp
     print("full video path", fullVideoPath)
     clip = VideoFileClip(fullVideoPath)
     print("the duration is: ", clip.duration)
-    times = list(float_range(0, clip.duration, time_increment_seconds))
+    #times = list(float_range(0, clip.duration, time_increment_seconds))
+    times = list(range(0, int(clip.duration), int(time_increment_seconds)))
     print("the clips are at: ", times)
+
+    # fine tune the location of time cutoffs to be during moments of silence.
+    # does't work that well tho.
+    # fineTuneTimeCutoffs(clip, times)
+
+    # add on the end of clip time for last segment info
     times.append(clip.duration)  # add the end time
 
     # create video segment list to process
@@ -196,7 +237,7 @@ def create_imagetext_dictionary(segments: List[Segment]):
             'image' : segment.imagePath,
             'text' : segment.text
         })
-    print(image_text)
+    # print(image_text)
     return image_text
 
 # example function execution

@@ -8,6 +8,12 @@ Additional features include language translation to a language of the user's cho
 
 Scribe also has many other possible uses for thoroughly documenting any type of lecture or presentation.
 
+### App Walkthough GIF
+<img src="http://g.recordit.co/Huq99byagP.gif" width=500><br>**Upload or provide the link of the video you want transcribed
+
+<img src="http://g.recordit.co/TqzADG7IF8.gif" width=500><br>**See your transcription and edit for accuracy, then get a pdf of screenshots and transcriptions
+
+
 ## :earth_americas: View on the web:
 [Scribe](https://class-scribe.herokuapp.com/) is hosted by Heroku.
 

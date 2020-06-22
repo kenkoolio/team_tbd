@@ -147,11 +147,12 @@ def result():
 @app.route('/send', methods=['POST'])
 def send():
     receiver = request.form['email-input']
-    pdf_path = request.form['pdf'][1:]
-    pdf_filename = pdf_path.split('static/pdf/')[-1]
-
+    pdf_path = './' + request.form['pdf'][1:]
+    pdf_filename = pdf_path.split('static/media/')[-1]
+    print(pdf_path)
+    print(pdf_filename)
     message = Mail(
-        from_email='scribe@mail.com',
+        from_email='class-scribe@mail.com',
         to_emails=receiver,
         subject='Scribe: Your notes.',
         html_content="<p>Scribe has sent you notes!  View the attached PDF for audio transcription and visual aides.</p><br><br><p>Class Scribe</p>")

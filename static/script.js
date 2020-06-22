@@ -19,7 +19,7 @@ $(document).ready(function () {
 
   $('#send-email').click(function(e) {
     e.preventDefault();
-    let pdfPath = $('#pdf').attr('src');
+    let pdfPath = $('#pdf').attr('src').slice(1);
     let form = $(this).closest('form');
     let input = $('<input>')
                   .attr('type', 'hidden')

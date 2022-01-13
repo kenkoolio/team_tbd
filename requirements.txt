@@ -16,7 +16,7 @@ Jinja2==2.11.2
 MarkupSafe==1.1.1
 moviepy==1.0.3
 numpy==1.18.5
-Pillow==7.1.2
+Pillow==9.0.0
 proglog==0.1.9
 PyJWT==1.7.1
 python-dateutil==2.8.1

@@ -18,7 +18,7 @@ moviepy==1.0.3
 numpy==1.18.5
 Pillow==7.1.2
 proglog==0.1.9
-PyJWT==1.7.1
+PyJWT==2.4.0
 python-dateutil==2.8.1
 python-http-client==3.2.7
 pytube3==9.6.4

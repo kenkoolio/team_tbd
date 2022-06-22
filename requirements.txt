@@ -15,7 +15,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 moviepy==1.0.3
-numpy==1.18.5
+numpy==1.22.0
 Pillow==7.1.2
 proglog==0.1.9
 PyJWT==1.7.1
